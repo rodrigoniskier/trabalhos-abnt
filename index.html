@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Trabalhos Acadêmicos - ABNT</title>
+    
+    <!-- Carregando as bibliotecas para gerar o DOCX a partir de uma CDN confiável -->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <style>
+        /* CSS para a aparência da página */
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+        :root {
+            --cor-primaria: #0d47a1; /* Azul mais escuro e acadêmico */
+            --cor-secundaria: #e3f2fd; /* Azul bem claro para fundo de botões */
+            --cor-sucesso: #2e7d32; /* Verde para o botão de formatar */
+            --cor-sucesso-hover: #1b5e20;
+            --cor-texto: #212121;
+            --cor-borda: #bdbdbd;
+            --cor-fundo: #f5f5f5;
+            --sombra-card: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Reset básico e configurações globais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--sombra-card);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        header {
+            background: linear-gradient(45deg, var(--cor-primaria), #1565c0);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid #ffc107; /* Um toque de dourado */
+        }
+
+        header h1 {
+            font-size: 2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        main {
+            padding: 25px 35px;
+        }
+
+        /* --- TELA DE SELEÇÃO --- */
+        #tela-selecao h2 {
+            text-align: center;
+            color: var(--cor-primaria);
+            margin-bottom: 30px;
+            font-size: 1.5em;
+        }
+
+        .botoes-selecao {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-selecao {
+            background-color: var(--cor-secundaria);
+            color: var(--cor-primaria);
+            border: 2px solid var(--cor-primaria);
+            padding: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-selecao:hover {
+            background-color: var(--cor-primaria);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+        }
+
+        /* --- TELA DO FORMULÁRIO --- */
+        #tela-formulario {
+            display: none; /* Inicia oculto */
+        }
+
+        #titulo-trabalho-selecionado {
+            text-align: center;
+            color: var(--cor-primaria);
+            border-bottom: 2px solid var(--cor-fundo);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 1.7em;
+            font-weight: 700;
+        }
+
+        .campo-grupo {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .campo-grupo h3 {
+            color: var(--cor-primaria);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--cor-primaria);
+            padding-left: 10px;
+            font-size: 1.2em;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #424242;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Lato', sans-serif;
+            background-color: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 8px rgba(13, 71, 161, 0.2);
+        }
+        
+        .campo-grupo small {
+            font-size: 0.85em;
+            color: #616161;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .btn-formatar {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background-color: var(--cor-sucesso);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 30px;
+        }
+
+        .btn-formatar:hover {
+            background-color: var(--cor-sucesso-hover);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background-color: #e0e0e0;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            color: #616161;
+        }
+
+        /* Estilo para a caixa de alerta customizada (se decidirmos usar no futuro) */
+        /* Por enquanto, o alert() padrão será usado por simplicidade */
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Gerador de Trabalhos Acadêmicos ABNT</h1>
+        </header>
+
+        <main>
+            <!-- TELA 1: SELEÇÃO DO TIPO DE TRABALHO -->
+            <section id="tela-selecao">
+                <h2>Selecione o tipo de trabalho acadêmico:</h2>
+                <div class="botoes-selecao">
+                    <button class="btn-selecao" data-tipo="Projeto de Pesquisa (CONEP)">Projeto de Pesquisa</button>
+                    <button class="btn-selecao" data-tipo="Artigo Científico">Artigo Científico</button>
+                    <button class="btn-selecao" data-tipo="Trabalho de Conclusão de Curso (TCC)">TCC</button>
+                    <button class="btn-selecao" data-tipo="Monografia">Monografia</button>
+                    <button class="btn-selecao" data-tipo="Dissertação de Mestrado">Dissertação</button>
+                    <button class="btn-selecao" data-tipo="Tese de Doutorado">Tese</button>
+                </div>
+            </section>
+
+            <!-- TELA 2: FORMULÁRIO DE PREENCHIMENTO -->
+            <section id="tela-formulario">
+                <h2 id="titulo-trabalho-selecionado"></h2>
+                
+                <form id="form-abnt">
+                    
+                    <!-- DADOS GERAIS (CAPA E FOLHA DE ROSTO) -->
+                    <div class="campo-grupo">
+                        <h3>Informações Gerais (Capa e Folha de Rosto)</h3>
+                        <label for="instituicao">Nome da Instituição:</label>
+                        <input type="text" id="instituicao" required placeholder="Ex: Universidade Federal da Paraíba">
+                        
+                        <label for="autor" style="margin-top: 15px;">Nome Completo do Autor:</label>
+                        <input type="text" id="autor" required placeholder="Ex: Rodrigo Niskier">
+
+                        <label for="titulo" style="margin-top: 15px;">Título do Trabalho:</label>
+                        <input type="text" id="titulo" required placeholder="O título principal do seu trabalho">
+
+                        <label for="subtitulo" style="margin-top: 15px;">Subtítulo (se houver):</label>
+                        <input type="text" id="subtitulo" placeholder="O subtítulo, se aplicável">
+                        
+                        <label for="cidade" style="margin-top: 15px;">Cidade da Instituição:</label>
+                        <input type="text" id="cidade" value="João Pessoa">
+
+                        <label for="ano" style="margin-top: 15px;">Ano:</label>
+                        <input type="number" id="ano" value="2024">
+                    </div>
+                    
+                    <!-- Natureza do Trabalho (Folha de Rosto) -->
+                    <div class="campo-grupo" id="secao-natureza">
+                         <h3>Natureza do Trabalho (Folha de Rosto)</h3>
+                         <label for="natureza">Texto da natureza do trabalho:</label>
+                         <textarea id="natureza" rows="4"></textarea>
+                         <small>Exemplo: Trabalho de Conclusão de Curso apresentado ao Curso de Graduação em [Nome do Curso] da [Instituição], como requisito parcial para a obtenção do título de Bacharel em [Nome do Curso].</small>
+                         
+                         <label for="orientador" style="margin-top: 15px;">Nome Completo do Orientador(a):</label>
+                         <input type="text" id="orientador" placeholder="Ex: Profa. Dra. Nome da Orientadora">
+                    </div>
+
+                    <!-- Pré-textuais -->
+                    <div class="campo-grupo">
+                        <h3>Elementos Pré-Textuais</h3>
+                        <label for="resumo">Resumo (em português):</label>
+                        <textarea id="resumo" required placeholder="Insira o resumo do seu trabalho aqui..."></textarea>
+                        
+                        <label for="palavras_chave" style="margin-top: 15px;">Palavras-chave (separadas por ponto final):</label>
+                        <input type="text" id="palavras_chave" required placeholder="Ex: Educação. Tecnologia. ABNT.">
+
+                        <label for="abstract" style="margin-top: 15px;">Abstract (resumo em língua estrangeira):</label>
+                        <textarea id="abstract" placeholder="Insert the abstract of your work here..."></textarea>
+                        
+                        <label for="keywords" style="margin-top: 15px;">Keywords (separadas por ponto final):</label>
+                        <input type="text" id="keywords" placeholder="Ex: Education. Technology. ABNT.">
+                    </div>
+                    
+                    <!-- Elementos Textuais -->
+                    <div class="campo-grupo">
+                        <h3>Elementos Textuais</h3>
+                        <label for="introducao">1. Introdução:</label>
+                        <textarea id="introducao" placeholder="Descreva a introdução do seu trabalho."></textarea>
+                        
+                        <label for="desenvolvimento" style="margin-top: 15px;">2. Desenvolvimento (ou seções específicas):</label>
+                        <textarea id="desenvolvimento" placeholder="Descreva o desenvolvimento. Para criar seções (ex: 2.1, 2.2), use títulos claros no texto. A formatação de títulos numerados não é gerada automaticamente neste template."></textarea>
+                        
+                        <label for="conclusao" style="margin-top: 15px;">3. Conclusão:</label>
+                        <textarea id="conclusao" placeholder="Descreva a conclusão ou considerações finais."></textarea>
+                    </div>
+
+                    <!-- Pós-textuais -->
+                    <div class="campo-grupo">
+                        <h3>Elementos Pós-Textuais</h3>
+                        <label for="referencias">Referências:</label>
+                        <textarea id="referencias" placeholder="Insira cada referência em uma nova linha. A formatação ABNT completa de cada entrada (ordem, negrito, etc.) deve ser feita pelo autor."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-formatar">Formatar e Baixar .DOCX</button>
+                </form>
+            </section>
+        </main>
+
+        <footer>
+            <p>Gerador de Trabalhos Acadêmicos v1.1 - Desenvolvido para fins de demonstração.</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const telaSelecao = document.getElementById('tela-selecao');
+    const telaFormulario = document.getElementById('tela-formulario');
+    const formAbnt = document.getElementById('form-abnt');
+    const botoesSelecao = document.querySelector('.botoes-selecao');
+    
+    let tipoTrabalhoCompleto = '';
+
+    botoesSelecao.addEventListener('click', (event) => {
+        // Garante que o clique foi em um botão de seleção
+        if (event.target.classList.contains('btn-selecao')) {
+            tipoTrabalhoCompleto = event.target.getAttribute('data-tipo');
+            
+            // 1. Exibe a caixa de alerta obrigatória com as informações cruciais
+            const mensagemAlerta = `
+ATENÇÃO - INFORMAÇÕES IMPORTANTES:
+
+1. O QUE ESTA APLICAÇÃO NÃO FAZ:
+   - Análise de conteúdo, plágio ou mérito do trabalho.
+   - Correção ortográfica ou gramatical.
+   - Geração automática de sumário, listas ou ficha catalográfica.
+   - Validação das normas específicas da sua instituição.
+
+2. REVISÃO FINAL É ESSENCIAL:
+   - A formatação gerada é um modelo. Você DEVE revisar o arquivo final e ajustá-lo conforme as regras detalhadas da ABNT e da sua instituição.
+
+3. SEUS DADOS NÃO SÃO SALVOS:
+   - O trabalho NÃO é salvo automaticamente. Se você fechar ou recarregar esta página, TODO o conteúdo digitado será PERDIDO.
+
+Clique em "OK" para declarar que está CIENTE e prosseguir.
+            `;
+            alert(mensagemAlerta.trim());
+
+            // 2. Prepara e transita para a tela de formulário
+            document.getElementById('titulo-trabalho-selecionado').textContent = tipoTrabalhoCompleto;
+            
+            // Esconde/mostra a seção de "natureza do trabalho" se for um Artigo
+            const secaoNatureza = document.getElementById('secao-natureza');
+            if (tipoTrabalhoCompleto === 'Artigo Científico') {
+                 secaoNatureza.style.display = 'none';
+            } else {
+                 secaoNatureza.style.display = 'block';
+                 // Preenche o campo 'natureza' com um texto padrão para auxiliar o usuário
+                 const naturezaInput = document.getElementById('natureza');
+                 naturezaInput.value = `${tipoTrabalhoCompleto} apresentado(a) ao [Nome do Programa/Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de [Título de Bacharel/Mestre/Doutor em...].`;
+            }
+            
+            telaSelecao.style.display = 'none';
+            telaFormulario.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola para o topo suavemente
+        }
+    });
+
+    formAbnt.addEventListener('submit', (event) => {
+        event.preventDefault(); // Impede o recarregamento da página, mantendo os dados
+
+        // Coleta todos os dados do formulário
+        const dados = {
+            instituicao: document.getElementById('instituicao').value.toUpperCase(),
+            autor: document.getElementById('autor').value.toUpperCase(),
+            titulo: document.getElementById('titulo').value.toUpperCase(),
+            subtitulo: document.getElementById('subtitulo').value.toUpperCase(),
+            cidade: document.getElementById('cidade').value.toUpperCase(),
+            ano: document.getElementById('ano').value,
+            natureza: document.getElementById('natureza').value,
+            orientador: document.getElementById('orientador').value,
+            resumo: document.getElementById('resumo').value,
+            palavras_chave: document.getElementById('palavras_chave').value,
+            abstract: document.getElementById('abstract').value,
+            keywords: document.getElementById('keywords').value,
+            introducao: document.getElementById('introducao').value,
+            desenvolvimento: document.getElementById('desenvolvimento').value,
+            conclusao: document.getElementById('conclusao').value,
+            referencias: document.getElementById('referencias').value,
+        };
+
+        // Usa a biblioteca docx.js para criar o documento em memória
+        const { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, PageBreak, Indent, Spacing } = docx;
+
+        // --- FUNÇÕES AUXILIARES DE FORMATAÇÃO ---
+        const criarParagrafosDeTexto = (texto) => {
+            if (!texto) return [new Paragraph("")]; // Retorna parágrafo vazio se não houver texto
+            // Divide o texto em parágrafos (por quebra de linha) e formata cada um
+            return texto.split('\n').filter(p => p.trim() !== '').map(paragrafo => 
+                new Paragraph({
+                    children: [new TextRun(paragrafo)],
+                    alignment: AlignmentType.JUSTIFIED,
+                    spacing: { line: 360 }, // Espaçamento 1.5 (1.5 * 240)
+                    indent: { firstLine: "1.25cm" }, // Recuo de 1.25cm para a primeira linha
+                })
+            );
+        };
+        
+        // --- CONSTRUÇÃO DO DOCUMENTO ---
+        const doc = new Document({
+            // Estilos globais do documento
+            styles: {
+                default: {
+                    document: {
+                        run: {
+                            size: "12pt", // 24 half-points
+                            font: "Times New Roman"
+                        },
+                    },
+                    paragraph: {
+                       spacing: { before: 0, after: 0 },
+                    }
+                },
+                // Estilos para os títulos das seções
+                paragraphStyles: [{
+                    id: "tituloSecao",
+                    name: "Título da Seção",
+                    basedOn: "Normal",
+                    next: "Normal",
+                    run: {
+                        bold: true,
+                        size: "12pt",
+                    },
+                    paragraph: {
+                        spacing: { before: "12pt", after: "12pt" }
+                    }
+                }]
+            },
+            // Seções do documento (páginas)
+            sections: [{
+                // Margens padrão ABNT
+                properties: {
+                    page: {
+                        margin: {
+                            top: "3cm",
+                            right: "2cm",
+                            bottom: "2cm",
+                            left: "3cm",
+                        },
+                    },
+                },
+                // Conteúdo do documento
+                children: [
+                    // --- CAPA ---
+                    new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
+                    new Paragraph({ text: "", spacing: { after: 2000 } }), // Espaçamento vertical
+                    new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
+                    new Paragraph({ text: "", spacing: { after: 2000 } }), // Espaçamento vertical
+                    new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
+                    ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
+                    new Paragraph({ text: "", spacing: { after: 4000 } }), // Espaçamento vertical grande
+                    new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
+                    new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
+                    new Paragraph({ children: [new PageBreak()] }),
+
+                    // --- FOLHA DE ROSTO ---
+                    new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }),
+                    new Paragraph({ text: "", spacing: { after: 2000 } }),
+                    new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
+                    ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
+                    new Paragraph({ text: "", spacing: { after: 2500 } }),
+                    // Bloco de natureza do trabalho, recuado
+                    ...(dados.natureza && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({
+                        children: [new TextRun({ text: dados.natureza, size: "12pt" })],
+                        indent: { left: "8cm" },
+                        alignment: AlignmentType.JUSTIFIED,
+                    })] : []),
+                     new Paragraph({ text: "", spacing: { after: 400 } }),
+                     ...(dados.orientador && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({ text: `Orientador(a): ${dados.orientador}`, indent: { left: "8cm" } })] : []),
+                     new Paragraph({ text: "", spacing: { after: 2500 } }),
+                     new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
+                     new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
+                     new Paragraph({ children: [new PageBreak()] }),
+
+                    // --- RESUMO ---
+                    new Paragraph({ text: "RESUMO", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
+                    new Paragraph({ text: dados.resumo, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
+                    new Paragraph({
+                        children: [
+                            new TextRun({ text: "Palavras-chave: ", bold: true }),
+                            new TextRun(dados.palavras_chave)
+                        ],
+                        spacing: { before: 240 }
+                    }),
+                    new Paragraph({ children: [new PageBreak()] }),
+
+                    // --- ABSTRACT ---
+                    new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
+                    new Paragraph({ text: dados.abstract, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
+                    new Paragraph({
+                        children: [
+                            new TextRun({ text: "Keywords: ", bold: true }),
+                            new TextRun(dados.keywords)
+                        ],
+                        spacing: { before: 240 }
+                    }),
+                    new Paragraph({ children: [new PageBreak()] }),
+
+                    // --- CORPO DO TEXTO (GERADO DINAMICAMENTE) ---
+                    new Paragraph({ text: "1 INTRODUÇÃO", style: "tituloSecao" }),
+                    ...criarParagrafosDeTexto(dados.introducao),
+
+                    new Paragraph({ text: "2 DESENVOLVIMENTO", style: "tituloSecao" }),
+                    ...criarParagrafosDeTexto(dados.desenvolvimento),
+                    
+                    new Paragraph({ text: "3 CONCLUSÃO", style: "tituloSecao" }),
+                    ...criarParagrafosDeTexto(dados.conclusao),
+                    
+                    new Paragraph({ children: [new PageBreak()] }),
+                    
+                    // --- REFERÊNCIAS ---
+                    new Paragraph({ text: "REFERÊNCIAS", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
+                    ...(dados.referencias.split('\n').filter(r => r.trim() !== '').map(ref => new Paragraph({
+                        text: ref,
+                        alignment: AlignmentType.JUSTIFIED,
+                        spacing: { after: 240 } // Espaço simples com espaço depois para separar as referências
+                    }))),
+                ]
+            }],
+        });
+
+        // Gera o arquivo .docx e inicia o download
+        Packer.toBlob(doc).then(blob => {
+            // Limpa o título para criar um nome de arquivo válido
+            const nomeArquivo = `Trabalho_Formatado_${dados.autor.split(' ')[0] || 'Autor'}.docx`;
+            saveAs(blob, nomeArquivo);
+            console.log("Documento gerado e download iniciado.");
+        }).catch((err) => {
+            console.error("Erro ao gerar o documento:", err);
+            alert("Ocorreu um erro ao gerar o documento. Verifique o console para mais detalhes.");
+        });
+    });
+});
+</script>
+
+</body>
+</html>
