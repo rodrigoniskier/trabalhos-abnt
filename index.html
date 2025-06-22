@@ -5,65 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Trabalhos Acadêmicos - ABNT</title>
     
+    <!-- Carregando as bibliotecas para gerar o DOCX a partir de uma CDN confiável -->
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     
     <style>
-        /* ... todo o CSS permanece inalterado ... */
+        /* CSS para a aparência da página */
         @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
         :root {
-            --cor-primaria: #003366;
-            --cor-secundaria: #f0f8ff;
-            --cor-texto: #333;
-            --cor-borda: #ccc;
-            --cor-fundo: #f4f7f6;
-            --sombra-card: 0 4px 8px rgba(0,0,0,0.1);
+            --cor-primaria: #0d47a1; /* Azul mais escuro e acadêmico */
+            --cor-secundaria: #e3f2fd; /* Azul bem claro para fundo de botões */
+            --cor-sucesso: #2e7d32; /* Verde para o botão de formatar */
+            --cor-sucesso-hover: #1b5e20;
+            --cor-texto: #212121;
+            --cor-borda: #bdbdbd;
+            --cor-fundo: #f5f5f5;
+            --sombra-card: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Reset básico e configurações globais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Lato', sans-serif;
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
-            margin: 0;
-            padding: 20px;
             line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
             max-width: 900px;
             background-color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: var(--sombra-card);
             overflow: hidden;
+            border: 1px solid #e0e0e0;
         }
 
         header {
-            background-color: var(--cor-primaria);
+            background: linear-gradient(45deg, var(--cor-primaria), #1565c0);
             color: white;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
+            border-bottom: 4px solid #ffc107; /* Um toque de dourado */
         }
 
         header h1 {
-            margin: 0;
-            font-size: 1.8em;
+            font-size: 2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         main {
-            padding: 30px;
+            padding: 25px 35px;
         }
 
-        /* ... restante do CSS permanece igual ... */
+        /* --- TELA DE SELEÇÃO --- */
         #tela-selecao h2 {
             text-align: center;
             color: var(--cor-primaria);
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            font-size: 1.5em;
         }
 
         .botoes-selecao {
@@ -80,7 +92,7 @@
             font-size: 1.1em;
             font-weight: 700;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
             transition: all 0.3s ease;
             text-align: center;
         }
@@ -88,12 +100,13 @@
         .btn-selecao:hover {
             background-color: var(--cor-primaria);
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.1);
         }
 
+        /* --- TELA DO FORMULÁRIO --- */
         #tela-formulario {
-            display: none;
+            display: none; /* Inicia oculto */
         }
 
         #titulo-trabalho-selecionado {
@@ -102,23 +115,31 @@
             border-bottom: 2px solid var(--cor-fundo);
             padding-bottom: 15px;
             margin-bottom: 30px;
+            font-size: 1.7em;
+            font-weight: 700;
         }
 
         .campo-grupo {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
         }
         
         .campo-grupo h3 {
             color: var(--cor-primaria);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border-left: 4px solid var(--cor-primaria);
             padding-left: 10px;
+            font-size: 1.2em;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 700;
+            color: #424242;
         }
 
         input[type="text"],
@@ -127,10 +148,11 @@
             width: 100%;
             padding: 12px;
             border: 1px solid var(--cor-borda);
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 1em;
             font-family: 'Lato', sans-serif;
-            box-sizing: border-box;
+            background-color: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
         
         textarea {
@@ -141,39 +163,98 @@
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--cor-primaria);
-            box-shadow: 0 0 5px rgba(0, 51, 102, 0.2);
+            box-shadow: 0 0 8px rgba(13, 71, 161, 0.2);
+        }
+        
+        .campo-grupo small {
+            font-size: 0.85em;
+            color: #616161;
+            display: block;
+            margin-top: 5px;
         }
 
         .btn-formatar {
             display: block;
             width: 100%;
-            padding: 15px;
-            background-color: #28a745;
+            padding: 18px;
+            background-color: var(--cor-sucesso);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
+            border-radius: 8px;
+            font-size: 1.3em;
             font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             margin-top: 30px;
         }
 
         .btn-formatar:hover {
-            background-color: #218838;
+            background-color: var(--cor-sucesso-hover);
+            transform: translateY(-2px);
         }
 
         footer {
-            background-color: var(--cor-fundo);
+            background-color: #e0e0e0;
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             font-size: 0.9em;
-            color: #666;
+            color: #616161;
+        }
+        
+        /* --- ESTILOS DO MODAL DE PROCESSAMENTO --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; /* Inicia oculto */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 {
+            color: var(--cor-primaria);
+            margin-bottom: 20px;
+        }
+
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--cor-primaria);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
     </style>
 </head>
 <body>
+
+    <!-- MODAL DE PROCESSAMENTO -->
+    <div id="loading-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Processando seu documento...</h3>
+            <p>Aguarde, o download começará em instantes.</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
 
     <div class="container">
         <header>
@@ -181,33 +262,36 @@
         </header>
 
         <main>
+            <!-- TELA 1: SELEÇÃO DO TIPO DE TRABALHO -->
             <section id="tela-selecao">
                 <h2>Selecione o tipo de trabalho acadêmico:</h2>
                 <div class="botoes-selecao">
-                    <button class="btn-selecao" data-tipo="Projeto de Pesquisa">Projeto de Pesquisa (CONEP)</button>
-                    <button class="btn-selecao" data-tipo="Artigo">Artigo Científico</button>
-                    <button class="btn-selecao" data-tipo="TCC">TCC (Trabalho de Conclusão de Curso)</button>
+                    <button class="btn-selecao" data-tipo="Projeto de Pesquisa (CONEP)">Projeto de Pesquisa</button>
+                    <button class="btn-selecao" data-tipo="Artigo Científico">Artigo Científico</button>
+                    <button class="btn-selecao" data-tipo="Trabalho de Conclusão de Curso (TCC)">TCC</button>
                     <button class="btn-selecao" data-tipo="Monografia">Monografia</button>
-                    <button class="btn-selecao" data-tipo="Dissertação">Dissertação de Mestrado</button>
-                    <button class="btn-selecao" data-tipo="Tese">Tese de Doutorado</button>
+                    <button class="btn-selecao" data-tipo="Dissertação de Mestrado">Dissertação</button>
+                    <button class="btn-selecao" data-tipo="Tese de Doutorado">Tese</button>
                 </div>
             </section>
 
+            <!-- TELA 2: FORMULÁRIO DE PREENCHIMENTO -->
             <section id="tela-formulario">
                 <h2 id="titulo-trabalho-selecionado"></h2>
                 
                 <form id="form-abnt">
                     
+                    <!-- DADOS GERAIS (CAPA E FOLHA DE ROSTO) -->
                     <div class="campo-grupo">
                         <h3>Informações Gerais (Capa e Folha de Rosto)</h3>
                         <label for="instituicao">Nome da Instituição:</label>
-                        <input type="text" id="instituicao" placeholder="Ex: Universidade Federal da Paraíba">
+                        <input type="text" id="instituicao" required placeholder="Ex: Universidade Federal da Paraíba">
                         
                         <label for="autor" style="margin-top: 15px;">Nome Completo do Autor:</label>
-                        <input type="text" id="autor" placeholder="Ex: Rodrigo Niskier">
+                        <input type="text" id="autor" required placeholder="Ex: Rodrigo Niskier">
 
                         <label for="titulo" style="margin-top: 15px;">Título do Trabalho:</label>
-                        <input type="text" id="titulo" placeholder="O título principal do seu trabalho">
+                        <input type="text" id="titulo" required placeholder="O título principal do seu trabalho">
 
                         <label for="subtitulo" style="margin-top: 15px;">Subtítulo (se houver):</label>
                         <input type="text" id="subtitulo" placeholder="O subtítulo, se aplicável">
@@ -216,50 +300,54 @@
                         <input type="text" id="cidade" value="João Pessoa">
 
                         <label for="ano" style="margin-top: 15px;">Ano:</label>
-                        <input type="number" id="ano" value="2025">
+                        <input type="number" id="ano" value="2024">
                     </div>
                     
-                    <div class="campo-grupo" data-secao="natureza">
+                    <!-- Natureza do Trabalho (Folha de Rosto) -->
+                    <div class="campo-grupo" id="secao-natureza">
                          <h3>Natureza do Trabalho (Folha de Rosto)</h3>
                          <label for="natureza">Texto da natureza do trabalho:</label>
                          <textarea id="natureza" rows="4"></textarea>
-                         <small>Ex: Trabalho de Conclusão de Curso apresentado ao Curso de Graduação em [Nome do Curso] da [Instituição], como requisito parcial para a obtenção do título de Bacharel em [Nome do Curso].</small>
+                         <small>Exemplo: Trabalho de Conclusão de Curso apresentado ao Curso de Graduação em [Nome do Curso] da [Instituição], como requisito parcial para a obtenção do título de Bacharel em [Nome do Curso].</small>
                          
-                         <label for="orientador" style="margin-top: 15px;">Nome do Orientador(a):</label>
+                         <label for="orientador" style="margin-top: 15px;">Nome Completo do Orientador(a):</label>
                          <input type="text" id="orientador" placeholder="Ex: Profa. Dra. Nome da Orientadora">
                     </div>
 
+                    <!-- Pré-textuais -->
                     <div class="campo-grupo">
                         <h3>Elementos Pré-Textuais</h3>
                         <label for="resumo">Resumo (em português):</label>
-                        <textarea id="resumo" placeholder="Insira o resumo do seu trabalho aqui..."></textarea>
+                        <textarea id="resumo" required placeholder="Insira o resumo do seu trabalho aqui..."></textarea>
                         
                         <label for="palavras_chave" style="margin-top: 15px;">Palavras-chave (separadas por ponto final):</label>
-                        <input type="text" id="palavras_chave" placeholder="Ex: Educação. Tecnologia. ABNT.">
+                        <input type="text" id="palavras_chave" required placeholder="Ex: Educação. Tecnologia. ABNT.">
 
-                        <label for="abstract" style="margin-top: 15px;">Abstract (resumo em inglês):</label>
+                        <label for="abstract" style="margin-top: 15px;">Abstract (resumo em língua estrangeira):</label>
                         <textarea id="abstract" placeholder="Insert the abstract of your work here..."></textarea>
                         
                         <label for="keywords" style="margin-top: 15px;">Keywords (separadas por ponto final):</label>
                         <input type="text" id="keywords" placeholder="Ex: Education. Technology. ABNT.">
                     </div>
                     
+                    <!-- Elementos Textuais -->
                     <div class="campo-grupo">
                         <h3>Elementos Textuais</h3>
                         <label for="introducao">1. Introdução:</label>
                         <textarea id="introducao" placeholder="Descreva a introdução do seu trabalho."></textarea>
                         
-                        <label for="desenvolvimento" style="margin-top: 15px;">2. Desenvolvimento:</label>
+                        <label for="desenvolvimento" style="margin-top: 15px;">2. Desenvolvimento (ou seções específicas):</label>
                         <textarea id="desenvolvimento" placeholder="Descreva o desenvolvimento. Para criar seções (ex: 2.1, 2.2), use títulos claros no texto. A formatação de títulos numerados não é gerada automaticamente neste template."></textarea>
                         
                         <label for="conclusao" style="margin-top: 15px;">3. Conclusão:</label>
                         <textarea id="conclusao" placeholder="Descreva a conclusão ou considerações finais."></textarea>
                     </div>
 
+                    <!-- Pós-textuais -->
                     <div class="campo-grupo">
                         <h3>Elementos Pós-Textuais</h3>
                         <label for="referencias">Referências:</label>
-                        <textarea id="referencias" placeholder="Insira cada referência em uma nova linha. A formatação (negrito, etc.) deve ser feita manualmente no Word posteriormente, se necessário."></textarea>
+                        <textarea id="referencias" placeholder="Insira cada referência em uma nova linha. A formatação ABNT completa de cada entrada (ordem, negrito, etc.) deve ser feita pelo autor."></textarea>
                     </div>
 
                     <button type="submit" class="btn-formatar">Formatar e Baixar .DOCX</button>
@@ -268,7 +356,7 @@
         </main>
 
         <footer>
-            <p>Gerador de Trabalhos Acadêmicos v1.0 - Desenvolvido para fins de demonstração.</p>
+            <p>Gerador de Trabalhos Acadêmicos v1.3 - Desenvolvido para fins de demonstração.</p>
         </footer>
     </div>
 
@@ -279,68 +367,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const telaFormulario = document.getElementById('tela-formulario');
     const formAbnt = document.getElementById('form-abnt');
     const botoesSelecao = document.querySelector('.botoes-selecao');
+    const loadingModal = document.getElementById('loading-modal'); // Pega o elemento do modal
     
-    let tipoTrabalhoSelecionado = '';
+    let tipoTrabalhoCompleto = '';
 
     botoesSelecao.addEventListener('click', (event) => {
         if (event.target.classList.contains('btn-selecao')) {
-            tipoTrabalhoSelecionado = event.target.getAttribute('data-tipo');
+            tipoTrabalhoCompleto = event.target.getAttribute('data-tipo');
             
-            // 1. Exibir o alerta obrigatório
             const mensagemAlerta = `
 ATENÇÃO - INFORMAÇÕES IMPORTANTES:
 
 1. O QUE ESTA APLICAÇÃO NÃO FAZ:
    - Análise de conteúdo, plágio ou mérito do trabalho.
    - Correção ortográfica ou gramatical.
-   - Geração de sumário, listas ou ficha catalográfica automáticos.
+   - Geração automática de sumário, listas ou ficha catalográfica.
+   - Validação das normas específicas da sua instituição.
 
 2. REVISÃO FINAL É ESSENCIAL:
-   - A formatação gerada é um template. Você DEVE revisar o arquivo final e ajustá-lo conforme as normas específicas da sua instituição.
+   - A formatação gerada é um modelo. Você DEVE revisar o arquivo final e ajustá-lo conforme as regras detalhadas da ABNT e da sua instituição.
 
 3. SEUS DADOS NÃO SÃO SALVOS:
    - O trabalho NÃO é salvo automaticamente. Se você fechar ou recarregar esta página, TODO o conteúdo digitado será PERDIDO.
 
-Clique em "OK" para declarar que está ciente e prosseguir.
-            `;
+Clique em "OK" para declarar que está CIENTE e prosseguir.`;
             alert(mensagemAlerta.trim());
 
-            // 2. Transitar para a tela de formulário
-            document.getElementById('titulo-trabalho-selecionado').textContent = tipoTrabalhoSelecionado;
+            document.getElementById('titulo-trabalho-selecionado').textContent = tipoTrabalhoCompleto;
             
-            // Esconde/mostra seções específicas (ex: natureza do trabalho para artigos)
-            const secaoNatureza = document.querySelector('[data-secao="natureza"]');
-            if (tipoTrabalhoSelecionado === 'Artigo') {
+            const secaoNatureza = document.getElementById('secao-natureza');
+            if (tipoTrabalhoCompleto === 'Artigo Científico') {
                  secaoNatureza.style.display = 'none';
             } else {
                  secaoNatureza.style.display = 'block';
-                 // Preenche campo 'natureza' com um template
-                 document.getElementById('natureza').value = `${tipoTrabalhoSelecionado} apresentado(a) como requisito para...`;
+                 const naturezaInput = document.getElementById('natureza');
+                 naturezaInput.value = `${tipoTrabalhoCompleto} apresentado(a) ao [Nome do Programa/Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de [Título de Bacharel/Mestre/Doutor em...].`;
             }
             
             telaSelecao.style.display = 'none';
             telaFormulario.style.display = 'block';
-            window.scrollTo(0, 0); // Rola para o topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
 
-    // ===== Função auxiliar movida para fora do array =====
-    function criarParagrafosDeTexto(texto) {
-        const { Paragraph, AlignmentType } = docx;
-        return texto.split('\n').map(paragrafo => new Paragraph({
-            text: paragrafo,
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { line: 360 }, // Espaçamento 1.5
-            indent: { firstLine: 709 } // Recuo 1.25cm
-        }));
-    }
-
     formAbnt.addEventListener('submit', (event) => {
-        event.preventDefault(); // Impede o recarregamento da página
+        event.preventDefault(); 
+        
+        loadingModal.style.display = 'flex'; // MOSTRA o modal de processamento
 
-        // Captura todos os dados do formulário
         const dados = {
-            instituicao: document.getElementById('instituicao').value,
+            instituicao: document.getElementById('instituicao').value.toUpperCase(),
             autor: document.getElementById('autor').value.toUpperCase(),
             titulo: document.getElementById('titulo').value.toUpperCase(),
             subtitulo: document.getElementById('subtitulo').value.toUpperCase(),
@@ -358,126 +434,130 @@ Clique em "OK" para declarar que está ciente e prosseguir.
             referencias: document.getElementById('referencias').value,
         };
 
-        // Usa a biblioteca docx.js para criar o documento
-        const { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel } = docx;
+        const { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak } = docx;
 
-        const doc = new Document({
-            sections: [{
-                properties: {
-                    // Margens ABNT: Superior 3cm, Esquerda 3cm, Inferior 2cm, Direita 2cm
-                    page: {
-                        margins: {
-                            top: 1701,    // 3cm em twentieths of a point
-                            left: 1701,   // 3cm
-                            bottom: 1134, // 2cm
-                            right: 1134,  // 2cm
+        const criarParagrafosDeTexto = (texto) => {
+            if (!texto) return [new Paragraph({ text: "" })];
+            return texto.split('\n').filter(p => p.trim() !== '').map(paragrafo => 
+                new Paragraph({
+                    children: [new TextRun(paragrafo)],
+                    alignment: AlignmentType.JUSTIFIED,
+                    spacing: { line: 360 }, // 1.5 lines
+                    indent: { firstLine: 709 }, // 1.25cm in Twentieths of a Point
+                })
+            );
+        };
+        
+        // Usamos um setTimeout para garantir que o modal apareça antes do processamento pesado
+        setTimeout(() => {
+            try {
+                const doc = new Document({
+                    styles: {
+                        default: {
+                            document: {
+                                run: { size: 24, font: "Times New Roman" },
+                            },
+                            paragraph: {
+                               spacing: { before: 0, after: 0 },
+                            }
                         },
+                        paragraphStyles: [{
+                            id: "tituloSecao",
+                            name: "Título da Seção",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            run: { bold: true, size: 24 },
+                            paragraph: { spacing: { before: 240, after: 240 } }
+                        }]
                     },
-                },
-                children: [
-                    // --- CAPA ---
-                    new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER }),
-                    new Paragraph({ text: "" }), new Paragraph({ text: "" }), new Paragraph({ text: "" }),
-                    new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }),
-                    new Paragraph({ text: "" }), new Paragraph({ text: "" }), new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),
-                    new Paragraph({ text: dados.titulo, alignment: AlignmentType.CENTER, style: "headline" }),
-                    ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
-                    new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),
-                    new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER, pageBreakBefore: false }),
-                    new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
-                    
-                    // --- FOLHA DE ROSTO ---
-                    new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, pageBreakBefore: true }),
-                    new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),
-                    new Paragraph({ text: dados.titulo, alignment: AlignmentType.CENTER }),
-                    ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
-                    new Paragraph({ text: "" }), new Paragraph({ text: "" }), new Paragraph({ text: "" }),
-                    new Paragraph({
-                        children: [new TextRun({ text: dados.natureza, size: 24 })],
-                        indent: { left: "40%" },
-                        alignment: AlignmentType.JUSTIFIED,
-                    }),
-                    new Paragraph({ text: `Orientador(a): ${dados.orientador}`, alignment: AlignmentType.LEFT }),
-                    new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),new Paragraph({ text: "" }),
-                    new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
-                    new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
-
-                    // --- RESUMO ---
-                    new Paragraph({ text: "RESUMO", alignment: AlignmentType.CENTER, pageBreakBefore: true, spacing: { after: 300 } }),
-                    new Paragraph({
-                        text: dados.resumo,
-                        alignment: AlignmentType.JUSTIFIED,
-                        spacing: { line: 360 }
-                    }),
-                    new Paragraph({
-                        children: [
-                            new TextRun({ text: "Palavras-chave: ", bold: true }),
-                            new TextRun(dados.palavras_chave)
-                        ],
-                        spacing: { before: 300 }
-                    }),
-
-                    // --- ABSTRACT ---
-                    new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.CENTER, pageBreakBefore: true, spacing: { after: 300 } }),
-                    new Paragraph({
-                        text: dados.abstract,
-                        alignment: AlignmentType.JUSTIFIED,
-                        spacing: { line: 360 }
-                    }),
-                    new Paragraph({
-                        children: [
-                            new TextRun({ text: "Keywords: ", bold: true }),
-                            new TextRun(dados.keywords)
-                        ],
-                        spacing: { before: 300 }
-                    }),
-
-                    // --- CONTEÚDO PRINCIPAL ---
-                    new Paragraph({ text: "1 INTRODUÇÃO", heading: HeadingLevel.HEADING_1, pageBreakBefore: true }),
-                    ...criarParagrafosDeTexto(dados.introducao),
-
-                    new Paragraph({ text: "2 DESENVOLVIMENTO", heading: HeadingLevel.HEADING_1 }),
-                    ...criarParagrafosDeTexto(dados.desenvolvimento),
-                    
-                    new Paragraph({ text: "3 CONCLUSÃO", heading: HeadingLevel.HEADING_1 }),
-                    ...criarParagrafosDeTexto(dados.conclusao),
-                    
-                    // --- REFERÊNCIAS ---
-                    new Paragraph({ text: "REFERÊNCIAS", heading: HeadingLevel.HEADING_1, pageBreakBefore: true }),
-                    ...(dados.referencias.split('\n').map(ref => new Paragraph({
-                        text: ref,
-                        alignment: AlignmentType.JUSTIFIED,
-                        spacing: { after: 240 }
-                    }))),
-                ]
-            }],
-            styles: {
-                default: {
-                    document: {
-                        run: {
-                            size: 24,
-                            font: "Times New Roman"
+                    sections: [{
+                        properties: {
+                            page: {
+                                margin: { top: 1701, right: 1134, bottom: 1134, left: 1701 },
+                            },
                         },
-                    },
-                },
-                paragraphStyles: [{
-                    id: "headline",
-                    name: "Headline",
-                    basedOn: "Normal",
-                    next: "Normal",
-                    run: {
-                        size: 28,
-                        bold: true,
-                    },
-                }]
+                        children: [
+                            new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
+                            new Paragraph({ text: "", spacing: { after: 2000 } }),
+                            new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
+                            new Paragraph({ text: "", spacing: { after: 2000 } }),
+                            new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
+                            ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
+                            new Paragraph({ text: "", spacing: { after: 4000 } }),
+                            new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
+                            new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
+                            new Paragraph({ children: [new PageBreak()] }),
+
+                            new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }),
+                            new Paragraph({ text: "", spacing: { after: 2000 } }),
+                            new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
+                            ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
+                            new Paragraph({ text: "", spacing: { after: 2500 } }),
+                            ...(dados.natureza && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({
+                                children: [new TextRun({ text: dados.natureza, size: 24 })],
+                                indent: { left: 4535 },
+                                alignment: AlignmentType.JUSTIFIED,
+                            })] : []),
+                             new Paragraph({ text: "", spacing: { after: 400 } }),
+                             ...(dados.orientador && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({ text: `Orientador(a): ${dados.orientador}`, indent: { left: 4535 } })] : []),
+                             new Paragraph({ text: "", spacing: { after: 2500 } }),
+                             new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
+                             new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
+                             new Paragraph({ children: [new PageBreak()] }),
+
+                            new Paragraph({ text: "RESUMO", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
+                            new Paragraph({ text: dados.resumo, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
+                            new Paragraph({
+                                children: [ new TextRun({ text: "Palavras-chave: ", bold: true }), new TextRun(dados.palavras_chave)],
+                                spacing: { before: 240 }
+                            }),
+                            new Paragraph({ children: [new PageBreak()] }),
+
+                            new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
+                            new Paragraph({ text: dados.abstract, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
+                            new Paragraph({
+                                children: [ new TextRun({ text: "Keywords: ", bold: true }), new TextRun(dados.keywords)],
+                                spacing: { before: 240 }
+                            }),
+                            new Paragraph({ children: [new PageBreak()] }),
+
+                            new Paragraph({ text: "1 INTRODUÇÃO", style: "tituloSecao" }),
+                            ...criarParagrafosDeTexto(dados.introducao),
+
+                            new Paragraph({ text: "2 DESENVOLVIMENTO", style: "tituloSecao" }),
+                            ...criarParagrafosDeTexto(dados.desenvolvimento),
+                            
+                            new Paragraph({ text: "3 CONCLUSÃO", style: "tituloSecao" }),
+                            ...criarParagrafosDeTexto(dados.conclusao),
+                            
+                            new Paragraph({ children: [new PageBreak()] }),
+                            
+                            new Paragraph({ text: "REFERÊNCIAS", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
+                            ...(dados.referencias.split('\n').filter(r => r.trim() !== '').map(ref => new Paragraph({
+                                text: ref,
+                                alignment: AlignmentType.JUSTIFIED,
+                                spacing: { after: 240 }
+                            }))),
+                        ]
+                    }],
+                });
+
+                Packer.toBlob(doc).then(blob => {
+                    const nomeArquivo = `Trabalho_Formatado_${dados.autor.split(' ')[0] || 'Autor'}.docx`;
+                    saveAs(blob, nomeArquivo);
+                    loadingModal.style.display = 'none'; // ESCONDE o modal após o download
+                }).catch((err) => {
+                    console.error("Erro durante a conversão para Blob:", err);
+                    loadingModal.style.display = 'none'; // Esconde o modal em caso de erro
+                    alert("Ocorreu um erro ao gerar o arquivo. Verifique o console do navegador (F12) para mais detalhes.");
+                });
+
+            } catch (e) {
+                console.error("Erro crítico durante a criação do documento:", e);
+                loadingModal.style.display = 'none'; // Esconde o modal em caso de erro
+                alert("Ocorreu um erro crítico ao criar a estrutura do documento. Verifique o console do navegador (F12) para mais detalhes.");
             }
-        });
-
-        // Gera o Blob e inicia o download
-        Packer.toBlob(doc).then(blob => {
-            saveAs(blob, "Trabalho_Formatado_ABNT.docx");
-            console.log("Documento gerado e download iniciado.");
-        });
+        }, 50); // Atraso de 50ms
     });
 });
 </script>
