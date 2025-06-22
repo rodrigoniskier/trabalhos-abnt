@@ -281,7 +281,6 @@
                 
                 <form id="form-abnt">
                     
-                    <!-- DADOS GERAIS (CAPA E FOLHA DE ROSTO) -->
                     <div class="campo-grupo">
                         <h3>Informações Gerais (Capa e Folha de Rosto)</h3>
                         <label for="instituicao">Nome da Instituição:</label>
@@ -303,7 +302,6 @@
                         <input type="number" id="ano" value="2024">
                     </div>
                     
-                    <!-- Natureza do Trabalho (Folha de Rosto) -->
                     <div class="campo-grupo" id="secao-natureza">
                          <h3>Natureza do Trabalho (Folha de Rosto)</h3>
                          <label for="natureza">Texto da natureza do trabalho:</label>
@@ -314,7 +312,6 @@
                          <input type="text" id="orientador" placeholder="Ex: Profa. Dra. Nome da Orientadora">
                     </div>
 
-                    <!-- Pré-textuais -->
                     <div class="campo-grupo">
                         <h3>Elementos Pré-Textuais</h3>
                         <label for="resumo">Resumo (em português):</label>
@@ -330,24 +327,22 @@
                         <input type="text" id="keywords" placeholder="Ex: Education. Technology. ABNT.">
                     </div>
                     
-                    <!-- Elementos Textuais -->
                     <div class="campo-grupo">
                         <h3>Elementos Textuais</h3>
                         <label for="introducao">1. Introdução:</label>
                         <textarea id="introducao" placeholder="Descreva a introdução do seu trabalho."></textarea>
                         
                         <label for="desenvolvimento" style="margin-top: 15px;">2. Desenvolvimento (ou seções específicas):</label>
-                        <textarea id="desenvolvimento" placeholder="Descreva o desenvolvimento. Para criar seções (ex: 2.1, 2.2), use títulos claros no texto. A formatação de títulos numerados não é gerada automaticamente neste template."></textarea>
+                        <textarea id="desenvolvimento" placeholder="Descreva o desenvolvimento. Para criar seções (ex: 2.1, 2.2), use títulos claros no texto."></textarea>
                         
                         <label for="conclusao" style="margin-top: 15px;">3. Conclusão:</label>
                         <textarea id="conclusao" placeholder="Descreva a conclusão ou considerações finais."></textarea>
                     </div>
 
-                    <!-- Pós-textuais -->
                     <div class="campo-grupo">
                         <h3>Elementos Pós-Textuais</h3>
                         <label for="referencias">Referências:</label>
-                        <textarea id="referencias" placeholder="Insira cada referência em uma nova linha. A formatação ABNT completa de cada entrada (ordem, negrito, etc.) deve ser feita pelo autor."></textarea>
+                        <textarea id="referencias" placeholder="Insira cada referência em uma nova linha."></textarea>
                     </div>
 
                     <button type="submit" class="btn-formatar">Formatar e Baixar .DOCX</button>
@@ -356,18 +351,21 @@
         </main>
 
         <footer>
-            <p>Gerador de Trabalhos Acadêmicos v1.3 - Desenvolvido para fins de demonstração.</p>
+            <p>Gerador de Trabalhos Acadêmicos v1.6 - Desenvolvido para fins de demonstração.</p>
         </footer>
     </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+// This function will contain the main logic of the application
+function initializeApp() {
+    // The library objects are now guaranteed to be available
+    const { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak } = window.docx;
 
     const telaSelecao = document.getElementById('tela-selecao');
     const telaFormulario = document.getElementById('tela-formulario');
     const formAbnt = document.getElementById('form-abnt');
     const botoesSelecao = document.querySelector('.botoes-selecao');
-    const loadingModal = document.getElementById('loading-modal'); // Pega o elemento do modal
+    const loadingModal = document.getElementById('loading-modal');
     
     let tipoTrabalhoCompleto = '';
 
@@ -375,23 +373,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('btn-selecao')) {
             tipoTrabalhoCompleto = event.target.getAttribute('data-tipo');
             
-            const mensagemAlerta = `
-ATENÇÃO - INFORMAÇÕES IMPORTANTES:
-
-1. O QUE ESTA APLICAÇÃO NÃO FAZ:
-   - Análise de conteúdo, plágio ou mérito do trabalho.
-   - Correção ortográfica ou gramatical.
-   - Geração automática de sumário, listas ou ficha catalográfica.
-   - Validação das normas específicas da sua instituição.
-
-2. REVISÃO FINAL É ESSENCIAL:
-   - A formatação gerada é um modelo. Você DEVE revisar o arquivo final e ajustá-lo conforme as regras detalhadas da ABNT e da sua instituição.
-
-3. SEUS DADOS NÃO SÃO SALVOS:
-   - O trabalho NÃO é salvo automaticamente. Se você fechar ou recarregar esta página, TODO o conteúdo digitado será PERDIDO.
-
-Clique em "OK" para declarar que está CIENTE e prosseguir.`;
-            alert(mensagemAlerta.trim());
+            const mensagemAlerta = `ATENÇÃO - INFORMAÇÕES IMPORTANTES:\n\n1. O QUE ESTA APLICAÇÃO NÃO FAZ:\n   - Análise de conteúdo, plágio ou mérito.\n   - Correção ortográfica ou gramatical.\n   - Geração automática de sumário, listas ou ficha catalográfica.\n\n2. REVISÃO FINAL É ESSENCIAL:\n   - A formatação gerada é um modelo. Você DEVE revisar o arquivo final.\n\n3. SEUS DADOS NÃO SÃO SALVOS:\n   - Se você fechar ou recarregar esta página, TODO o conteúdo será PERDIDO.\n\nClique em "OK" para declarar que está CIENTE e prosseguir.`;
+            alert(mensagemAlerta);
 
             document.getElementById('titulo-trabalho-selecionado').textContent = tipoTrabalhoCompleto;
             
@@ -413,28 +396,26 @@ Clique em "OK" para declarar que está CIENTE e prosseguir.`;
     formAbnt.addEventListener('submit', (event) => {
         event.preventDefault(); 
         
-        loadingModal.style.display = 'flex'; // MOSTRA o modal de processamento
+        loadingModal.style.display = 'flex';
 
         const dados = {
-            instituicao: document.getElementById('instituicao').value.toUpperCase(),
-            autor: document.getElementById('autor').value.toUpperCase(),
-            titulo: document.getElementById('titulo').value.toUpperCase(),
-            subtitulo: document.getElementById('subtitulo').value.toUpperCase(),
-            cidade: document.getElementById('cidade').value.toUpperCase(),
-            ano: document.getElementById('ano').value,
-            natureza: document.getElementById('natureza').value,
-            orientador: document.getElementById('orientador').value,
-            resumo: document.getElementById('resumo').value,
-            palavras_chave: document.getElementById('palavras_chave').value,
-            abstract: document.getElementById('abstract').value,
-            keywords: document.getElementById('keywords').value,
-            introducao: document.getElementById('introducao').value,
-            desenvolvimento: document.getElementById('desenvolvimento').value,
-            conclusao: document.getElementById('conclusao').value,
-            referencias: document.getElementById('referencias').value,
+            instituicao: document.getElementById('instituicao').value.toUpperCase() || "",
+            autor: document.getElementById('autor').value.toUpperCase() || "",
+            titulo: document.getElementById('titulo').value.toUpperCase() || "",
+            subtitulo: document.getElementById('subtitulo').value.toUpperCase() || "",
+            cidade: document.getElementById('cidade').value.toUpperCase() || "",
+            ano: document.getElementById('ano').value || "",
+            natureza: document.getElementById('natureza').value || "",
+            orientador: document.getElementById('orientador').value || "",
+            resumo: document.getElementById('resumo').value || "",
+            palavras_chave: document.getElementById('palavras_chave').value || "",
+            abstract: document.getElementById('abstract').value || "",
+            keywords: document.getElementById('keywords').value || "",
+            introducao: document.getElementById('introducao').value || "",
+            desenvolvimento: document.getElementById('desenvolvimento').value || "",
+            conclusao: document.getElementById('conclusao').value || "",
+            referencias: document.getElementById('referencias').value || "",
         };
-
-        const { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak } = docx;
 
         const criarParagrafosDeTexto = (texto) => {
             if (!texto) return [new Paragraph({ text: "" })];
@@ -443,23 +424,97 @@ Clique em "OK" para declarar que está CIENTE e prosseguir.`;
                     children: [new TextRun(paragrafo)],
                     alignment: AlignmentType.JUSTIFIED,
                     spacing: { line: 360 }, // 1.5 lines
-                    indent: { firstLine: 709 }, // 1.25cm in Twentieths of a Point
+                    indent: { firstLine: 709 }, // 1.25cm
                 })
             );
         };
         
-        // Usamos um setTimeout para garantir que o modal apareça antes do processamento pesado
         setTimeout(() => {
             try {
+                const docChildren = [];
+
+                // --- CAPA ---
+                docChildren.push(new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
+                docChildren.push(new Paragraph({ text: "", spacing: { after: 2000 } }));
+                docChildren.push(new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
+                docChildren.push(new Paragraph({ text: "", spacing: { after: 2000 } }));
+                docChildren.push(new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }));
+                if (dados.subtitulo) {
+                    docChildren.push(new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER }));
+                }
+                docChildren.push(new Paragraph({ text: "", spacing: { after: 4000 } }));
+                docChildren.push(new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }));
+                docChildren.push(new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }));
+                docChildren.push(new Paragraph({ children: [new PageBreak()] }));
+
+                // --- FOLHA DE ROSTO ---
+                docChildren.push(new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }));
+                docChildren.push(new Paragraph({ text: "", spacing: { after: 2000 } }));
+                docChildren.push(new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }));
+                 if (dados.subtitulo) {
+                    docChildren.push(new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER }));
+                }
+                docChildren.push(new Paragraph({ text: "", spacing: { after: 2500 } }));
+                if (dados.natureza && tipoTrabalhoCompleto !== 'Artigo Científico') {
+                    docChildren.push(new Paragraph({
+                        children: [new TextRun({ text: dados.natureza, size: 24 })],
+                        indent: { left: 4535 }, // 8cm
+                        alignment: AlignmentType.JUSTIFIED,
+                    }));
+                }
+                 docChildren.push(new Paragraph({ text: "", spacing: { after: 400 } }));
+                 if (dados.orientador && tipoTrabalhoCompleto !== 'Artigo Científico') {
+                    docChildren.push(new Paragraph({ text: `Orientador(a): ${dados.orientador}`, indent: { left: 4535 } }));
+                 }
+                 docChildren.push(new Paragraph({ text: "", spacing: { after: 2500 } }));
+                 docChildren.push(new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }));
+                 docChildren.push(new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }));
+                 docChildren.push(new Paragraph({ children: [new PageBreak()] }));
+
+                // --- ELEMENTOS PRÉ-TEXTUAIS ---
+                docChildren.push(new Paragraph({ text: "RESUMO", alignment: AlignmentType.LEFT, style: "tituloSecao" }));
+                docChildren.push(new Paragraph({ text: dados.resumo, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }));
+                docChildren.push(new Paragraph({
+                    children: [ new TextRun({ text: "Palavras-chave: ", bold: true }), new TextRun(dados.palavras_chave)],
+                    spacing: { before: 240 }
+                }));
+                docChildren.push(new Paragraph({ children: [new PageBreak()] }));
+
+                docChildren.push(new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.LEFT, style: "tituloSecao" }));
+                docChildren.push(new Paragraph({ text: dados.abstract, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }));
+                docChildren.push(new Paragraph({
+                    children: [ new TextRun({ text: "Keywords: ", bold: true }), new TextRun(dados.keywords)],
+                    spacing: { before: 240 }
+                }));
+                docChildren.push(new Paragraph({ children: [new PageBreak()] }));
+
+                // --- ELEMENTOS TEXTUAIS ---
+                docChildren.push(new Paragraph({ text: "1 INTRODUÇÃO", style: "tituloSecao", alignment: AlignmentType.LEFT }));
+                docChildren.push(...criarParagrafosDeTexto(dados.introducao));
+                docChildren.push(new Paragraph({ text: "2 DESENVOLVIMENTO", style: "tituloSecao", alignment: AlignmentType.LEFT }));
+                docChildren.push(...criarParagrafosDeTexto(dados.desenvolvimento));
+                docChildren.push(new Paragraph({ text: "3 CONCLUSÃO", style: "tituloSecao", alignment: AlignmentType.LEFT }));
+                docChildren.push(...criarParagrafosDeTexto(dados.conclusao));
+                docChildren.push(new Paragraph({ children: [new PageBreak()] }));
+                
+                // --- ELEMENTOS PÓS-TEXTUAIS ---
+                docChildren.push(new Paragraph({ text: "REFERÊNCIAS", alignment: AlignmentType.LEFT, style: "tituloSecao" }));
+                if(dados.referencias){
+                    const referenciasArray = dados.referencias.split('\n').filter(r => r.trim() !== '');
+                    referenciasArray.forEach(ref => {
+                        docChildren.push(new Paragraph({
+                            text: ref,
+                            alignment: AlignmentType.JUSTIFIED,
+                            spacing: { after: 240 } // Single spacing with space after
+                        }));
+                    });
+                }
+
                 const doc = new Document({
                     styles: {
                         default: {
-                            document: {
-                                run: { size: 24, font: "Times New Roman" },
-                            },
-                            paragraph: {
-                               spacing: { before: 0, after: 0 },
-                            }
+                            document: { run: { size: 24, font: "Times New Roman" } },
+                            paragraph: { spacing: { before: 0, after: 0 } }
                         },
                         paragraphStyles: [{
                             id: "tituloSecao",
@@ -472,93 +527,55 @@ Clique em "OK" para declarar que está CIENTE e prosseguir.`;
                     },
                     sections: [{
                         properties: {
-                            page: {
-                                margin: { top: 1701, right: 1134, bottom: 1134, left: 1701 },
-                            },
+                            page: { margin: { top: 1701, right: 1134, bottom: 1134, left: 1701 } },
                         },
-                        children: [
-                            new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
-                            new Paragraph({ text: "", spacing: { after: 2000 } }),
-                            new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
-                            new Paragraph({ text: "", spacing: { after: 2000 } }),
-                            new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
-                            ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
-                            new Paragraph({ text: "", spacing: { after: 4000 } }),
-                            new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
-                            new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
-                            new Paragraph({ children: [new PageBreak()] }),
-
-                            new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }),
-                            new Paragraph({ text: "", spacing: { after: 2000 } }),
-                            new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
-                            ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
-                            new Paragraph({ text: "", spacing: { after: 2500 } }),
-                            ...(dados.natureza && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({
-                                children: [new TextRun({ text: dados.natureza, size: 24 })],
-                                indent: { left: 4535 },
-                                alignment: AlignmentType.JUSTIFIED,
-                            })] : []),
-                             new Paragraph({ text: "", spacing: { after: 400 } }),
-                             ...(dados.orientador && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({ text: `Orientador(a): ${dados.orientador}`, indent: { left: 4535 } })] : []),
-                             new Paragraph({ text: "", spacing: { after: 2500 } }),
-                             new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
-                             new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
-                             new Paragraph({ children: [new PageBreak()] }),
-
-                            new Paragraph({ text: "RESUMO", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
-                            new Paragraph({ text: dados.resumo, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
-                            new Paragraph({
-                                children: [ new TextRun({ text: "Palavras-chave: ", bold: true }), new TextRun(dados.palavras_chave)],
-                                spacing: { before: 240 }
-                            }),
-                            new Paragraph({ children: [new PageBreak()] }),
-
-                            new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
-                            new Paragraph({ text: dados.abstract, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
-                            new Paragraph({
-                                children: [ new TextRun({ text: "Keywords: ", bold: true }), new TextRun(dados.keywords)],
-                                spacing: { before: 240 }
-                            }),
-                            new Paragraph({ children: [new PageBreak()] }),
-
-                            new Paragraph({ text: "1 INTRODUÇÃO", style: "tituloSecao" }),
-                            ...criarParagrafosDeTexto(dados.introducao),
-
-                            new Paragraph({ text: "2 DESENVOLVIMENTO", style: "tituloSecao" }),
-                            ...criarParagrafosDeTexto(dados.desenvolvimento),
-                            
-                            new Paragraph({ text: "3 CONCLUSÃO", style: "tituloSecao" }),
-                            ...criarParagrafosDeTexto(dados.conclusao),
-                            
-                            new Paragraph({ children: [new PageBreak()] }),
-                            
-                            new Paragraph({ text: "REFERÊNCIAS", alignment: AlignmentType.CENTER, style: "tituloSecao" }),
-                            ...(dados.referencias.split('\n').filter(r => r.trim() !== '').map(ref => new Paragraph({
-                                text: ref,
-                                alignment: AlignmentType.JUSTIFIED,
-                                spacing: { after: 240 }
-                            }))),
-                        ]
+                        children: docChildren,
                     }],
                 });
 
                 Packer.toBlob(doc).then(blob => {
                     const nomeArquivo = `Trabalho_Formatado_${dados.autor.split(' ')[0] || 'Autor'}.docx`;
                     saveAs(blob, nomeArquivo);
-                    loadingModal.style.display = 'none'; // ESCONDE o modal após o download
+                    loadingModal.style.display = 'none';
                 }).catch((err) => {
                     console.error("Erro durante a conversão para Blob:", err);
-                    loadingModal.style.display = 'none'; // Esconde o modal em caso de erro
-                    alert("Ocorreu um erro ao gerar o arquivo. Verifique o console do navegador (F12) para mais detalhes.");
+                    loadingModal.style.display = 'none';
+                    alert("Ocorreu um erro ao gerar o arquivo. Verifique o console (F12).");
                 });
 
             } catch (e) {
                 console.error("Erro crítico durante a criação do documento:", e);
-                loadingModal.style.display = 'none'; // Esconde o modal em caso de erro
-                alert("Ocorreu um erro crítico ao criar a estrutura do documento. Verifique o console do navegador (F12) para mais detalhes.");
+                loadingModal.style.display = 'none';
+                alert("Ocorreu um erro crítico ao criar a estrutura. Verifique o console (F12).");
             }
-        }, 50); // Atraso de 50ms
+        }, 50);
     });
+}
+
+// This function waits for the external libraries to be ready before starting the app
+function waitForLibraries(callback, timeout = 10000, interval = 100) {
+    let elapsedTime = 0;
+
+    const check = () => {
+        // Check if both libraries are loaded and attached to the window object
+        if (window.docx && window.saveAs) {
+            callback();
+        } else {
+            elapsedTime += interval;
+            if (elapsedTime >= timeout) {
+                console.error("Timeout: docx.js or FileSaver.js library failed to load.");
+                alert("Erro: A biblioteca para gerar documentos não carregou após 10 segundos. Verifique sua conexão ou possíveis bloqueadores de script.");
+            } else {
+                setTimeout(check, interval);
+            }
+        }
+    };
+    check();
+}
+
+// Start the process when the window is fully loaded
+window.addEventListener('load', () => {
+    waitForLibraries(initializeApp);
 });
 </script>
 
