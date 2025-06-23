@@ -6,27 +6,18 @@
     <title>Gerador de Trabalhos Acadêmicos - ABNT</title>
     
     <style>
-        /* CSS para a aparência da página */
         @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
-
         :root {
-            --cor-primaria: #0d47a1; /* Azul mais escuro e acadêmico */
-            --cor-secundaria: #e3f2fd; /* Azul bem claro para fundo de botões */
-            --cor-sucesso: #2e7d32; /* Verde para o botão de formatar */
+            --cor-primaria: #0d47a1;
+            --cor-secundaria: #e3f2fd;
+            --cor-sucesso: #2e7d32;
             --cor-sucesso-hover: #1b5e20;
             --cor-texto: #212121;
             --cor-borda: #bdbdbd;
             --cor-fundo: #f5f5f5;
             --sombra-card: 0 5px 15px rgba(0,0,0,0.08);
         }
-
-        /* Reset básico e configurações globais */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Lato', sans-serif;
             background-color: var(--cor-fundo);
@@ -38,7 +29,6 @@
             min-height: 100vh;
             padding: 20px;
         }
-
         .container {
             width: 100%;
             max-width: 900px;
@@ -48,38 +38,26 @@
             overflow: hidden;
             border: 1px solid #e0e0e0;
         }
-
         header {
             background: linear-gradient(45deg, var(--cor-primaria), #1565c0);
             color: white;
             padding: 30px 20px;
             text-align: center;
-            border-bottom: 4px solid #ffc107; /* Um toque de dourado */
+            border-bottom: 4px solid #ffc107;
         }
-
-        header h1 {
-            font-size: 2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-
-        main {
-            padding: 25px 35px;
-        }
-
-        /* --- TELA DE SELEÇÃO --- */
+        header h1 { font-size: 2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+        main { padding: 25px 35px; }
         #tela-selecao h2 {
             text-align: center;
             color: var(--cor-primaria);
             margin-bottom: 30px;
             font-size: 1.5em;
         }
-
         .botoes-selecao {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
-
         .btn-selecao {
             background-color: var(--cor-secundaria);
             color: var(--cor-primaria);
@@ -92,19 +70,13 @@
             transition: all 0.3s ease;
             text-align: center;
         }
-
         .btn-selecao:hover {
             background-color: var(--cor-primaria);
             color: white;
             transform: translateY(-5px);
             box-shadow: 0 8px 12px rgba(0,0,0,0.1);
         }
-
-        /* --- TELA DO FORMULÁRIO --- */
-        #tela-formulario {
-            display: none; /* Inicia oculto */
-        }
-
+        #tela-formulario { display: none; }
         #titulo-trabalho-selecionado {
             text-align: center;
             color: var(--cor-primaria);
@@ -114,7 +86,6 @@
             font-size: 1.7em;
             font-weight: 700;
         }
-
         .campo-grupo {
             margin-bottom: 30px;
             padding: 20px;
@@ -122,7 +93,6 @@
             border-radius: 8px;
             background-color: #fafafa;
         }
-        
         .campo-grupo h3 {
             color: var(--cor-primaria);
             margin-bottom: 15px;
@@ -130,17 +100,13 @@
             padding-left: 10px;
             font-size: 1.2em;
         }
-
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 700;
             color: #424242;
         }
-
-        input[type="text"],
-        input[type="number"],
-        textarea {
+        input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--cor-borda);
@@ -150,25 +116,18 @@
             background-color: #fff;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-        
-        textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
+        textarea { min-height: 150px; resize: vertical; }
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--cor-primaria);
             box-shadow: 0 0 8px rgba(13, 71, 161, 0.2);
         }
-        
         .campo-grupo small {
             font-size: 0.85em;
             color: #616161;
             display: block;
             margin-top: 5px;
         }
-
         .btn-formatar {
             display: block;
             width: 100%;
@@ -183,12 +142,10 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             margin-top: 30px;
         }
-
         .btn-formatar:hover {
             background-color: var(--cor-sucesso-hover);
             transform: translateY(-2px);
         }
-
         footer {
             background-color: #e0e0e0;
             text-align: center;
@@ -196,8 +153,6 @@
             font-size: 0.9em;
             color: #616161;
         }
-        
-        /* --- ESTILOS DO MODAL DE PROCESSAMENTO --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -205,12 +160,11 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.6);
-            display: none; /* Inicia oculto */
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
-
         .modal-content {
             background-color: white;
             padding: 40px;
@@ -218,12 +172,7 @@
             text-align: center;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
-
-        .modal-content h3 {
-            color: var(--cor-primaria);
-            margin-bottom: 20px;
-        }
-
+        .modal-content h3 { color: var(--cor-primaria); margin-bottom: 20px; }
         .spinner {
             border: 6px solid #f3f3f3;
             border-top: 6px solid var(--cor-primaria);
@@ -233,13 +182,14 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
     </style>
+    <!-- Bibliotecas via CDN -->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
 
@@ -274,322 +224,96 @@
             <!-- TELA 2: FORMULÁRIO DE PREENCHIMENTO -->
             <section id="tela-formulario">
                 <h2 id="titulo-trabalho-selecionado"></h2>
-                
                 <form id="form-abnt">
-                    
                     <div class="campo-grupo">
                         <h3>Informações Gerais (Capa e Folha de Rosto)</h3>
                         <label for="instituicao">Nome da Instituição:</label>
                         <input type="text" id="instituicao" required placeholder="Ex: Universidade Federal da Paraíba">
-                        
                         <label for="autor" style="margin-top: 15px;">Nome Completo do Autor:</label>
                         <input type="text" id="autor" required placeholder="Ex: Rodrigo Niskier">
-
                         <label for="titulo" style="margin-top: 15px;">Título do Trabalho:</label>
                         <input type="text" id="titulo" required placeholder="O título principal do seu trabalho">
-
                         <label for="subtitulo" style="margin-top: 15px;">Subtítulo (se houver):</label>
                         <input type="text" id="subtitulo" placeholder="O subtítulo, se aplicável">
-                        
                         <label for="cidade" style="margin-top: 15px;">Cidade da Instituição:</label>
                         <input type="text" id="cidade" value="João Pessoa">
-
                         <label for="ano" style="margin-top: 15px;">Ano:</label>
                         <input type="number" id="ano" value="2024">
                     </div>
-                    
                     <div class="campo-grupo" id="secao-natureza">
-                         <h3>Natureza do Trabalho (Folha de Rosto)</h3>
-                         <label for="natureza">Texto da natureza do trabalho:</label>
-                         <textarea id="natureza" rows="4"></textarea>
-                         <small>Exemplo: Trabalho de Conclusão de Curso apresentado ao Curso de Graduação em [Nome do Curso] da [Instituição], como requisito parcial para a obtenção do título de Bacharel em [Nome do Curso].</small>
-                         
-                         <label for="orientador" style="margin-top: 15px;">Nome Completo do Orientador(a):</label>
-                         <input type="text" id="orientador" placeholder="Ex: Profa. Dra. Nome da Orientadora">
+                        <h3>Natureza do Trabalho (Folha de Rosto)</h3>
+                        <label for="natureza">Texto da natureza do trabalho:</label>
+                        <textarea id="natureza" rows="4"></textarea>
+                        <small>Exemplo: Trabalho de Conclusão de Curso apresentado ao Curso de Graduação em [Nome do Curso] da [Instituição], como requisito parcial para a obtenção do título de Bacharel em [Nome do Curso].</small>
+                        <label for="orientador" style="margin-top: 15px;">Nome Completo do Orientador(a):</label>
+                        <input type="text" id="orientador" placeholder="Ex: Profa. Dra. Nome da Orientadora">
                     </div>
-
                     <div class="campo-grupo">
                         <h3>Elementos Pré-Textuais</h3>
                         <label for="resumo">Resumo (em português):</label>
                         <textarea id="resumo" required placeholder="Insira o resumo do seu trabalho aqui..."></textarea>
-                        
                         <label for="palavras_chave" style="margin-top: 15px;">Palavras-chave (separadas por ponto final):</label>
                         <input type="text" id="palavras_chave" required placeholder="Ex: Educação. Tecnologia. ABNT.">
-
                         <label for="abstract" style="margin-top: 15px;">Abstract (resumo em língua estrangeira):</label>
                         <textarea id="abstract" placeholder="Insert the abstract of your work here..."></textarea>
-                        
                         <label for="keywords" style="margin-top: 15px;">Keywords (separadas por ponto final):</label>
                         <input type="text" id="keywords" placeholder="Ex: Education. Technology. ABNT.">
                     </div>
-                    
                     <div class="campo-grupo">
                         <h3>Elementos Textuais</h3>
                         <label for="introducao">1. Introdução:</label>
                         <textarea id="introducao" placeholder="Descreva a introdução do seu trabalho."></textarea>
-                        
                         <label for="desenvolvimento" style="margin-top: 15px;">2. Desenvolvimento (ou seções específicas):</label>
                         <textarea id="desenvolvimento" placeholder="Descreva o desenvolvimento. Para criar seções (ex: 2.1, 2.2), use títulos claros no texto."></textarea>
-                        
                         <label for="conclusao" style="margin-top: 15px;">3. Conclusão:</label>
                         <textarea id="conclusao" placeholder="Descreva a conclusão ou considerações finais."></textarea>
                     </div>
-
                     <div class="campo-grupo">
                         <h3>Elementos Pós-Textuais</h3>
                         <label for="referencias">Referências:</label>
                         <textarea id="referencias" placeholder="Insira cada referência em uma nova linha."></textarea>
                     </div>
-
                     <button type="submit" class="btn-formatar">Formatar e Baixar .DOCX</button>
                 </form>
             </section>
         </main>
-
         <footer>
-            <p>Gerador de Trabalhos Acadêmicos v2.0 - Desenvolvido para fins de demonstração.</p>
+            <p>Gerador de Trabalhos Acadêmicos v2.6 - Desenvolvido para fins de demonstração.</p>
         </footer>
     </div>
-    
-    <!-- BIBLIOTECAS INJETADAS DIRETAMENTE NO CÓDIGO -->
-    <script>
-    // FileSaver.js v2.0.5 (c) 2016 Eli Grey, MIT License
-    !function(e,t){"function"==typeof define&&define.amd?define([],t):"undefined"!=typeof exports?t():(t(),e.FileSaver={exports:{}}.exports)}(this,function(){"use strict";function t(e,t){return"undefined"==typeof t?t={autoBom:!1}:"object"!=typeof t&&(console.warn("Deprecated: Expected third argument to be a object"),t={autoBom:!t}),t}function r(e,t){var r=new XMLHttpRequest;r.open("GET",e),r.responseType="blob",r.onload=function(){o(r.response,t)},r.onerror=function(){console.error("could not download file")},r.send()}function n(e){var t=new XMLHttpRequest;t.open("HEAD",e,!1);try{t.send()}catch(e){}return 200<=t.status&&299>=t.status}function i(e){try{e.dispatchEvent(new MouseEvent("click"))}catch(t){var r=document.createEvent("MouseEvents");r.initMouseEvent("click",!0,!0,window,0,0,0,0,0,!1,!1,!1,!1,0,null),e.dispatchEvent(r)}}var o=window.saveAs||("object"==typeof window||"function"==typeof window.addEventListener?window:"undefined"!=typeof self?self:"undefined"!=typeof global?global:"undefined"!=typeof module?module:this).saveAs||("object"==typeof window&&window.navigator.msSaveOrOpenBlob?function(e,t,r){return t=t||"download",r||(e=function(e){return/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)?new Blob(["\ufeff",e],{type:e.type}):e}(e)),window.navigator.msSaveOrOpenBlob(e,t)}:function(e,s,a){a=t(a);var l=window,u=a.force||!l.URL||!l.URL.createObjectURL,f=document.createElement("a");s=s||"download",f.download=s,f.rel="noopener",("string"==typeof e?r:function(e,t,r){var n=new XMLHttpRequest;n.open("GET",e),n.responseType="blob",n.onload=function(){o(n.response,t,r)},n.onerror=function(){console.error("could not download file")},n.send()})(e,s,a),l.setTimeout(function(){URL.revokeObjectURL(f.href)},4e4),l.setTimeout(function(){i(f)},0)});window.saveAs=o.saveAs=o});
-    </script>
-    <script>
-    // docx.js v8.5.0 (c) 2020-2023 Dolymood, MIT License
-    !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).docx={})}(this,(function(e){"use strict";var t={};Object.defineProperty(t,"__esModule",{value:!0}),t.mimeType=void 0,t.mimeType=()=>{const e=new Map([["gif","image/gif"],["jpeg","image/jpeg"],["jpg","image/jpeg"],["png","image/png"],["svg","image/svg+xml"],["bmp","image/bmp"],["tiff","image/tiff"]]);return{get:(t="")=>{const r=e.get(t);if(void 0===r)throw new Error("Invalid image type");return r}}};var r={};Object.defineProperty(r,"__esModule",{value:!0}),r.convertInchesToTwip=r.convertMillimetersToTwip=r.convertHundredthsOfAMillimeterToTwip=r.emuToPixels=r.pixelsToEMU=r.pixelsToPoint=void 0,r.pixelsToPoint=e=>Math.round(72*e/96),r.pixelsToEMU=e=>Math.round(914400*e/96),r.emuToPixels=e=>Math.round(96*e/914400),r.convertHundredthsOfAMillimeterToTwip=e=>Math.round(e/17.6388888888889),r.convertMillimetersToTwip=e=>Math.round(56.6929*e),r.convertInchesToTwip=e=>1440*e;var n={};Object.defineProperty(n,"__esModule",{value:!0});var i={};Object.defineProperty(i,"__esModule",{value:!0});var o={};Object.defineProperty(o,"__esModule",{value:!0});var s={};var a,l;Object.defineProperty(s,"__esModule",{value:!0}),s.XmlComponent=void 0,(a=l||(l={}))[a.ROOT=0]="ROOT",a[a.CHILD=1]="CHILD";class u{constructor(e){this.rootKey=e}}s.XmlComponent=u;var c={};Object.defineProperty(c,"__esModule",{value:!0}),c.Attributes=void 0;const d=s.XmlComponent;class p extends d{constructor(e){super("attributes"),this.initialAttributes=e,this.xmlKeys=e?{...e.xmlKeys}:void 0,this.root=e?{...e.root}:{},this.deleted=new Set}prepForXml(e){const t=super.prepForXml(e);if(!t)return;const r={...this.root};for(const e of this.deleted)delete r[e];return t.root=r,t}delete(e){return this.deleted.add(e),this}}c.Attributes=p;var h={};Object.defineProperty(h,"__esModule",{value:!0});var m={};Object.defineProperty(m,"__esModule",{value:!0});var f={};Object.defineProperty(f,"__esModule",{value:!0}),f.Next=f.Previous=f.Ignore=void 0,f.Ignore=Symbol("Ignore"),f.Previous=Symbol("Previous"),f.Next=Symbol("Next");var g={};Object.defineProperty(g,"__esModule",{value:!0});var b={};Object.defineProperty(b,"__esModule",{value:!0}),b.BaseXmlComponent=void 0;const w=s.XmlComponent,y=f.Next,P=f.Previous;class v extends w{constructor(e){super(e),this.root=[]}prepForXml(e){const t=super.prepForXml(e);return t&&(t.root=[...this.root.map(e=>"string"==typeof e?e:e.prepForXml(e)).filter(e=>void 0!==e)]),t}push(e){this.root.push(e)}map(e){let t=y;for(const[r,n]of this.root.entries())if(t===P)t=y;else{const i=e(n,r,this.root);i&&(t=i,i instanceof w?this.root[r]=i:i===f.Ignore?this.root[r]="":this.root.splice(r,0,i))}}}b.BaseXmlComponent=v;var I={};Object.defineProperty(I,"__esModule",{value:!0});var O={};Object.defineProperty(O,"__esModule",{value:!0});var _={};Object.defineProperty(_,"__esModule",{value:!0});var S={};Object.defineProperty(S,"__esModule",{value:!0});var k={};Object.defineProperty(k,"__esModule",{value:!0}),k.Formatter=void 0;const x=b.BaseXmlComponent;class E{constructor(e={}){this.formatters=e}format(e,t){let r=e;for(const e in this.formatters){const n=this.formatters[e];if(void 0===n)continue;let i=n(t);if(i instanceof x)r=i;else if(i)for(const e in i){const t=r.root.find(t=>t.rootKey===e);t?Object.assign(t.root,i[e]):r.push(new x(e,i[e]))}}return r}}k.Formatter=E;var A={};Object.defineProperty(A,"__esModule",{value:!0}),A.Table=void 0;const j=c.Attributes,C=b.BaseXmlComponent;class M extends C{constructor(e){super("w:tbl"),this.properties=new M.Properties,this.rows=[],this.grid=new M.Grid,this.root.push(this.properties),this.root.push(this.grid);for(const t of e.rows){this.root.push(t);const e=t.options.columnWidths;this.grid.addGridColumn(e)}e.columnWidths&&this.grid.addGridColumn(e.columnWidths),this.properties.setWidth(e.width),this.properties.setLayout(e.layout),e.style&&this.properties.setStyle(e.style),e.borders&&this.properties.setBorders(e.borders),e.float&&this.properties.setFloat(e.float),e.bidi&&this.properties.setBidi(),e.margins&&this.properties.setMargins(e.margins),e.alignment&&this.properties.setAlignment(e.alignment),e.indent&&this.properties.setIndent(e.indent),e.visuallyRightToLeft&&this.properties.setVisuallyRightToLeft()}}M.Properties=class extends C{constructor(){super("w:tblPr"),this.borders=new M.Borders,this.margins=new M.Margins,this.root.push(this.borders),this.root.push(this.margins)}setWidth(e){if(e.size){const t=new C("w:tblW");t.root.push(new j({root:{type:e.type,w:e.size}})),this.root.push(t)}}setLayout(e){if(e){const t=new C("w:jc");t.root.push(new j({root:{val:e}})),this.root.push(t)}}setStyle(e){const t=new C("w:tblStyle");t.root.push(new j({root:{"w:val":e}})),this.root.push(t)}setBorders(e){this.borders.setBorders(e.top,e.bottom,e.left,e.right,e.insideHorizontal,e.insideVertical)}setMargins(e){this.margins.setMargins(e.top,e.bottom,e.left,e.right)}setFloat(e){const t=new C("w:tblpPr");t.root.push(new j({root:{...e,tblpXSpec:e.horizontalAnchor,tblpYSpec:e.verticalAnchor}})),this.root.push(t)}setBidi(){this.root.push(new C("w:bidiVisual"))}setVisuallyRightToLeft(){this.root.push(new C("w:bidiVisual"))}setAlignment(e){const t=new C("w:jc");t.root.push(new j({root:{"w:val":e}})),this.root.push(t)}setIndent(e){if(e.size){const t=new C("w:tblInd");t.root.push(new j({root:{"w:w":e.size,"w:type":e.type}})),this.root.push(t)}}},M.Grid=class extends C{constructor(){super("w:tblGrid")}addGridColumn(e){for(const t of e)this.root.push(new M.GridCol(t))}},M.GridCol=class extends C{constructor(e){super("w:gridCol"),this.root.push(new j({root:{w:e}}))}},M.Borders=class extends C{constructor(){super("w:tblBorders")}setBorders(e,t,r,n,i,o){this.root.push(new M.Border("top",e)),this.root.push(new M.Border("bottom",t)),this.root.push(new M.Border("left",r)),this.root.push(new M.Border("right",n)),this.root.push(new M.Border("insideH",i)),this.root.push(new M.Border("insideV",o))}},M.Border=class extends C{constructor(e,t={}){super(`w:${e}`),t.style&&t.size&&t.color&&this.root.push(new j({root:{val:t.style,sz:t.size,color:t.color}}))}},M.Margins=class extends C{constructor(){super("w:tblCellMar")}setMargins(e,t,r,n){this.root.push(new M.Margin("top",{size:e,type:"dxa"})),this.root.push(new M.Margin("bottom",{size:t,type:"dxa"})),this.root.push(new M.Margin("left",{size:r,type:"dxa"})),this.root.push(new M.Margin("right",{size:n,type:"dxa"}))}},M.Margin=class extends C{constructor(e,t){super(`w:${e}`),this.root.push(new j({root:{"w:w":t.size,"w:type":t.type}}))}},A.Table=M;var D={};Object.defineProperty(D,"__esModule",{value:!0});var B={};Object.defineProperty(B,"__esModule",{value:!0});var L={};Object.defineProperty(L,"__esModule",{value:!0}),L.CharacterStyle=void 0;const T=c.Attributes,R=b.BaseXmlComponent;class F extends R{constructor(e){super("w:r"),e.children&&this.root.push(...e.children),this.properties=new F.Properties({style:e.style,bold:e.bold,boldComplexScript:e.boldComplexScript,italics:e.italics,underline:e.underline,emphasisMark:e.emphasisMark,color:e.color,font:e.font,size:e.size,rightToLeft:e.rightToLeft,smallCaps:e.smallCaps,allCaps:e.allCaps,strike:e.strike,doubleStrike:e.doubleStrike,subScript:e.subScript,superScript:e.superScript,highlight:e.highlight,characterSpacing:e.characterSpacing}),this.root.unshift(this.properties)}add(e){this.root.push(e)}}F.Properties=class extends R{constructor(e){super("w:rPr"),e.style&&this.push(new R("w:rStyle",{attributes:new T({root:{"w:val":e.style}})})),e.bold&&this.push(new R("w:b")),e.boldComplexScript&&this.push(new R("w:bCs")),e.italics&&this.push(new R("w:i")),e.underline&&this.push(new R("w:u",{attributes:new T({root:{"w:val":e.underline.type,"w:color":e.underline.color}})})),e.emphasisMark&&this.push(new R("w:em",{attributes:new T({root:{"w:val":e.emphasisMark.type}})})),e.color&&this.push(new R("w:color",{attributes:new T({root:{"w:val":e.color}})})),e.font&&this.push(new R("w:rFonts",{attributes:new T({root:{...e.font.ascii?{"w:ascii":e.font.ascii}:{},...e.font.cs?{"w:cs":e.font.cs}:{},...e.font.eastAsia?{"w:eastAsia":e.font.eastAsia}:{},...e.font.hAnsi?{"w:hAnsi":e.font.hAnsi}:{},...e.font.hint?{"w:hint":e.font.hint}:{}}})})),e.size&&this.push(new R("w:sz",{attributes:new T({root:{"w:val":2*e.size}})})),e.size&&this.push(new R("w:szCs",{attributes:new T({root:{"w:val":2*e.size}})})),e.rightToLeft&&this.push(new R("w:rtl")),e.smallCaps&&this.push(new R("w:smallCaps")),e.allCaps&&this.push(new R("w:caps")),e.strike&&this.push(new R("w:strike")),e.doubleStrike&&this.push(new R("w:dstrike")),e.subScript&&this.push(new R("w:vertAlign",{attributes:new T({root:{"w:val":"subscript"}})})),e.superScript&&this.push(new R("w:vertAlign",{attributes:new T({root:{"w:val":"superscript"}})})),e.highlight&&this.push(new R("w:highlight",{attributes:new T({root:{"w:val":e.highlight}})})),e.characterSpacing&&this.push(new R("w:spacing",{attributes:new T({root:{"w:val":e.characterSpacing}})}))}},L.CharacterStyle=F;var N={};Object.defineProperty(N,"__esModule",{value:!0}),N.TextRun=void 0;const U=c.Attributes,W=b.BaseXmlComponent,V=L.CharacterStyle;class H extends V{constructor(e){const t="string"==typeof e?{text:e}:e;super({children:void 0===t.text?void 0:[new H.Text(t.text)],...t}),this.text=t.text}}H.Text=class extends W{constructor(e){super("w:t"),this.root.push(new U({root:{"xml:space":"preserve"}})),this.root.push(e)}},N.TextRun=H;var z={};Object.defineProperty(z,"__esModule",{value:!0}),z.PageBreak=void 0;const G=c.Attributes,q=b.BaseXmlComponent,K=N.TextRun;class X extends q{constructor(){super("w:p"),this.root.push(new K({children:[new q("w:br",{attributes:new G({root:{"w:type":"page"}})})]}))}}z.PageBreak=X;var $={};Object.defineProperty($, "__esModule", {
-    value: !0
-}), $.Paragraph = void 0;
-const J = c.Attributes,
-    Y = b.BaseXmlComponent,
-    Z = L.CharacterStyle,
-    Q = z.PageBreak;
-class ee extends Y {
-    constructor(e) {
-        let t;
-        if ("string" == typeof e) t = {
-            text: e
-        };
-        else if (e instanceof Z || e instanceof Q) t = {
-            children: [e]
-        };
-        else {
-            if (Array.isArray(e)) throw new Error("Paragraph constructor requires a string, object, or IRenderable, but not an array.");
-            t = e
-        }
-        if (super("w:p"), this.properties = new ee.Properties, this.root.push(this.properties), void 0 !== t.text) this.root.push(new Z({
-            children: [new Z.Text(t.text)]
-        }));
-        else if (t.children)
-            for (const e of t.children) this.root.push(e);
-        t.style && this.properties.setStyle(t.style), t.alignment && this.properties.setAlignment(t.alignment), t.heading && this.properties.setHeading(t.heading), t.bidirectional && this.properties.setBidirectional(), t.thematicBreak && this.properties.setThematicBreak(), t.pageBreakBefore && this.properties.setPageBreakBefore(), t.contextualSpacing && this.properties.setContextualSpacing(), t.indent && this.properties.setIndentation(t.indent), t.spacing && this.properties.setSpacing(t.spacing), t.keepLines && this.properties.setKeepLines(), t.keepNext && this.properties.setKeepNext(), t.border && this.properties.setBorder(t.border), t.shading && this.properties.setShading(t.shading), t.tabStops && this.properties.setTabStops(t.tabStops)
-    }
-}
-ee.Properties = class extends Y {
-    constructor() {
-        super("w:pPr")
-    }
-    setStyle(e) {
-        this.root.push(new Y("w:pStyle", {
-            attributes: new J({
-                root: {
-                    "w:val": e
-                }
-            })
-        }))
-    }
-    setAlignment(e) {
-        this.root.push(new Y("w:jc", {
-            attributes: new J({
-                root: {
-                    "w:val": e
-                }
-            })
-        }))
-    }
-    setHeading(e) {
-        this.root.push(new Y("w:pStyle", {
-            attributes: new J({
-                root: {
-                    "w:val": e
-                }
-            })
-        }))
-    }
-    setBidirectional() {
-        this.root.push(new Y("w:bidi"))
-    }
-    setThematicBreak() {
-        this.root.push(new ee.ThematicBreak)
-    }
-    setPageBreakBefore() {
-        this.root.push(new Y("w:pageBreakBefore"))
-    }
-    setContextualSpacing() {
-        this.root.push(new Y("w:contextualSpacing"))
-    }
-    setIndentation(e) {
-        e.left && this.root.push(new Y("w:ind", {
-            attributes: new J({
-                root: {
-                    "w:left": e.left
-                }
-            })
-        })), e.right && this.root.push(new Y("w:ind", {
-            attributes: new J({
-                root: {
-                    "w:right": e.right
-                }
-            })
-        })), e.firstLine && this.root.push(new Y("w:ind", {
-            attributes: new J({
-                root: {
-                    "w:firstLine": e.firstLine
-                }
-            })
-        })), e.hanging && this.root.push(new Y("w:ind", {
-            attributes: new J({
-                root: {
-                    "w:hanging": e.hanging
-                }
-            })
-        }))
-    }
-    setSpacing(e) {
-        const t = {};
-        void 0 !== e.before && (t["w:before"] = e.before), void 0 !== e.after && (t["w:after"] = e.after), void 0 !== e.line && (t["w:line"] = e.line), this.root.push(new Y("w:spacing", {
-            attributes: new J({
-                root: t
-            })
-        }))
-    }
-    setKeepLines() {
-        this.root.push(new Y("w:keepLines"))
-    }
-    setKeepNext() {
-        this.root.push(new Y("w:keepNext"))
-    }
-    setBorder(e) {
-        const t = new ee.Borders;
-        e.top && t.addTopBorder(e.top), e.bottom && t.addBottomBorder(e.bottom), e.left && t.addLeftBorder(e.left), e.right && t.addRightBorder(e.right), this.root.push(t)
-    }
-    setShading(e) {
-        this.root.push(new ee.Shading(e))
-    }
-    setTabStops(e) {
-        for (const t of e) this.root.push(new ee.TabStop(t.type, t.position))
-    }
-}, ee.ThematicBreak = class extends Y {
-    constructor() {
-        super("w:pBdr");
-        const e = new Y("w:bottom", {
-            attributes: new J({
-                root: {
-                    "w:color": "auto",
-                    "w:space": "1",
-                    "w:val": "single",
-                    "w:sz": "6"
-                }
-            })
-        });
-        this.root.push(e)
-    }
-}, ee.Borders = class extends Y {
-    constructor() {
-        super("w:pBdr")
-    }
-    addTopBorder(e) {
-        this.root.push(this.createBorder("top", e))
-    }
-    addBottomBorder(e) {
-        this.root.push(this.createBorder("bottom", e))
-    }
-    addLeftBorder(e) {
-        this.root.push(this.createBorder("left", e))
-    }
-    addRightBorder(e) {
-        this.root.push(this.createBorder("right", e))
-    }
-    createBorder(e, t) {
-        const r = {};
-        return void 0 !== t.color && (r["w:color"] = t.color), void 0 !== t.space && (r["w:space"] = t.space), void 0 !== t.style && (r["w:val"] = t.style), void 0 !== t.size && (r["w:sz"] = t.size), new Y(`w:${e}`, {
-            attributes: new J({
-                root: r
-            })
-        })
-    }
-}, ee.Shading = class extends Y {
-    constructor(e) {
-        super("w:shd"), this.root.push(new J({
-            root: {
-                "w:val": e.type,
-                "w:color": e.color,
-                "w:fill": e.fill
-            }
-        }))
-    }
-}, ee.TabStop = class extends Y {
-    constructor(e, t) {
-        super("w:tabs"), this.root.push(new Y("w:tab", {
-            attributes: new J({
-                root: {
-                    "w:val": e,
-                    "w:pos": t
-                }
-            })
-        }))
-    }
-}, $.Paragraph = ee;
-
-// ... and so on for the entire library ...
-
-e.AlignmentType=void 0,e.AlignmentType=a.AlignmentType,e.Document=a.Document,e.Packer=a.Packer,e.Paragraph=$.Paragraph,e.TextRun=N.TextRun,e.PageBreak=z.PageBreak,e.Table=A.Table,e.CharacterStyle=L.CharacterStyle,e.HeadingLevel=void 0,e.HeadingLevel=l.HeadingLevel,Object.defineProperty(e,"__esModule",{value:!0})}));
-</script>
-
-    <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
+    <!-- Bibliotecas externas já importadas no <head> -->
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // As bibliotecas agora estão embutidas, então estão disponíveis imediatamente.
+        // Bibliotecas já disponíveis via CDN
         const { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak } = docx;
-
         const telaSelecao = document.getElementById('tela-selecao');
         const telaFormulario = document.getElementById('tela-formulario');
         const formAbnt = document.getElementById('form-abnt');
         const botoesSelecao = document.querySelector('.botoes-selecao');
         const loadingModal = document.getElementById('loading-modal');
-        
         let tipoTrabalhoCompleto = '';
-
         botoesSelecao.addEventListener('click', (event) => {
             if (event.target.classList.contains('btn-selecao')) {
                 tipoTrabalhoCompleto = event.target.getAttribute('data-tipo');
-                
                 const mensagemAlerta = `ATENÇÃO - INFORMAÇÕES IMPORTANTES:\n\n1. O QUE ESTA APLICAÇÃO NÃO FAZ:\n   - Análise de conteúdo, plágio ou mérito.\n   - Correção ortográfica ou gramatical.\n   - Geração automática de sumário, listas ou ficha catalográfica.\n\n2. REVISÃO FINAL É ESSENCIAL:\n   - A formatação gerada é um modelo. Você DEVE revisar o arquivo final.\n\n3. SEUS DADOS NÃO SÃO SALVOS:\n   - Se você fechar ou recarregar esta página, TODO o conteúdo será PERDIDO.\n\nClique em "OK" para declarar que está CIENTE e prosseguir.`;
                 alert(mensagemAlerta);
-
                 document.getElementById('titulo-trabalho-selecionado').textContent = tipoTrabalhoCompleto;
-                
                 const secaoNatureza = document.getElementById('secao-natureza');
                 if (tipoTrabalhoCompleto === 'Artigo Científico') {
-                     secaoNatureza.style.display = 'none';
+                    secaoNatureza.style.display = 'none';
                 } else {
-                     secaoNatureza.style.display = 'block';
-                     const naturezaInput = document.getElementById('natureza');
-                     naturezaInput.value = `${tipoTrabalhoCompleto} apresentado(a) ao [Nome do Programa/Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de [Título de Bacharel/Mestre/Doutor em...].`;
+                    secaoNatureza.style.display = 'block';
+                    const naturezaInput = document.getElementById('natureza');
+                    naturezaInput.value = `${tipoTrabalhoCompleto} apresentado(a) ao [Nome do Programa/Curso] da [Nome da Instituição], como requisito parcial para a obtenção do título de [Título de Bacharel/Mestre/Doutor em...].`;
                 }
-                
                 telaSelecao.style.display = 'none';
                 telaFormulario.style.display = 'block';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
-
         formAbnt.addEventListener('submit', (event) => {
             event.preventDefault(); 
-            
             loadingModal.style.display = 'flex';
-
             const dados = {
                 instituicao: document.getElementById('instituicao').value.toUpperCase() || "",
                 autor: document.getElementById('autor').value.toUpperCase() || "",
@@ -608,123 +332,104 @@ e.AlignmentType=void 0,e.AlignmentType=a.AlignmentType,e.Document=a.Document,e.P
                 conclusao: document.getElementById('conclusao').value || "",
                 referencias: document.getElementById('referencias').value || "",
             };
-
             const criarParagrafosDeTexto = (texto) => {
                 if (!texto) return [new Paragraph({ text: "" })];
                 return texto.split('\n').filter(p => p.trim() !== '').map(paragrafo => 
                     new Paragraph({
                         children: [new TextRun(paragrafo)],
                         alignment: AlignmentType.JUSTIFIED,
-                        spacing: { line: 360 }, // 1.5 lines
-                        indent: { firstLine: 709 }, // 1.25cm
+                        spacing: { line: 360 },
+                        indent: { firstLine: 709 },
                     })
                 );
             };
-            
             setTimeout(() => {
                 try {
-                    const docChildren = [];
-
-                    // --- CAPA ---
-                    docChildren.push(new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
-                    docChildren.push(new Paragraph({ text: "", spacing: { after: 2000 } }));
-                    docChildren.push(new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
-                    docChildren.push(new Paragraph({ text: "", spacing: { after: 2000 } }));
-                    docChildren.push(new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }));
-                    if (dados.subtitulo) {
-                        docChildren.push(new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER }));
-                    }
-                    docChildren.push(new Paragraph({ text: "", spacing: { after: 4000 } }));
-                    docChildren.push(new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }));
-                    docChildren.push(new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }));
-                    docChildren.push(new Paragraph({ children: [new PageBreak()] }));
-
-                    // --- FOLHA DE ROSTO ---
-                    docChildren.push(new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }));
-                    docChildren.push(new Paragraph({ text: "", spacing: { after: 2000 } }));
-                    docChildren.push(new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }));
-                     if (dados.subtitulo) {
-                        docChildren.push(new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER }));
-                    }
-                    docChildren.push(new Paragraph({ text: "", spacing: { after: 2500 } }));
-                    if (dados.natureza && tipoTrabalhoCompleto !== 'Artigo Científico') {
-                        docChildren.push(new Paragraph({
-                            children: [new TextRun({ text: dados.natureza, size: 24 })],
-                            indent: { left: 4535 }, // 8cm
-                            alignment: AlignmentType.JUSTIFIED,
-                        }));
-                    }
-                     docChildren.push(new Paragraph({ text: "", spacing: { after: 400 } }));
-                     if (dados.orientador && tipoTrabalhoCompleto !== 'Artigo Científico') {
-                        docChildren.push(new Paragraph({ text: `Orientador(a): ${dados.orientador}`, indent: { left: 4535 } }));
-                     }
-                     docChildren.push(new Paragraph({ text: "", spacing: { after: 2500 } }));
-                     docChildren.push(new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }));
-                     docChildren.push(new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }));
-                     docChildren.push(new Paragraph({ children: [new PageBreak()] }));
-
-                    // --- ELEMENTOS PRÉ-TEXTUAIS ---
-                    docChildren.push(new Paragraph({ text: "RESUMO", alignment: AlignmentType.LEFT, style: "tituloSecao" }));
-                    docChildren.push(new Paragraph({ text: dados.resumo, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }));
-                    docChildren.push(new Paragraph({
-                        children: [ new TextRun({ text: "Palavras-chave: ", bold: true }), new TextRun(dados.palavras_chave)],
-                        spacing: { before: 240 }
-                    }));
-                    docChildren.push(new Paragraph({ children: [new PageBreak()] }));
-
-                    docChildren.push(new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.LEFT, style: "tituloSecao" }));
-                    docChildren.push(new Paragraph({ text: dados.abstract, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }));
-                    docChildren.push(new Paragraph({
-                        children: [ new TextRun({ text: "Keywords: ", bold: true }), new TextRun(dados.keywords)],
-                        spacing: { before: 240 }
-                    }));
-                    docChildren.push(new Paragraph({ children: [new PageBreak()] }));
-
-                    // --- ELEMENTOS TEXTUAIS ---
-                    docChildren.push(new Paragraph({ text: "1 INTRODUÇÃO", style: "tituloSecao", alignment: AlignmentType.LEFT }));
-                    docChildren.push(...criarParagrafosDeTexto(dados.introducao));
-                    docChildren.push(new Paragraph({ text: "2 DESENVOLVIMENTO", style: "tituloSecao", alignment: AlignmentType.LEFT }));
-                    docChildren.push(...criarParagrafosDeTexto(dados.desenvolvimento));
-                    docChildren.push(new Paragraph({ text: "3 CONCLUSÃO", style: "tituloSecao", alignment: AlignmentType.LEFT }));
-                    docChildren.push(...criarParagrafosDeTexto(dados.conclusao));
-                    docChildren.push(new Paragraph({ children: [new PageBreak()] }));
-                    
-                    // --- ELEMENTOS PÓS-TEXTUAIS ---
-                    docChildren.push(new Paragraph({ text: "REFERÊNCIAS", alignment: AlignmentType.LEFT, style: "tituloSecao" }));
-                    if(dados.referencias){
-                        const referenciasArray = dados.referencias.split('\n').filter(r => r.trim() !== '');
-                        referenciasArray.forEach(ref => {
-                            docChildren.push(new Paragraph({
-                                text: ref,
-                                alignment: AlignmentType.JUSTIFIED,
-                                spacing: { after: 240 } // Single spacing with space after
-                            }));
-                        });
-                    }
-
                     const doc = new Document({
-                        styles: {
-                            default: {
-                                document: { run: { size: 24, font: "Times New Roman" } },
-                                paragraph: { spacing: { before: 0, after: 0 } }
-                            },
-                            paragraphStyles: [{
-                                id: "tituloSecao",
-                                name: "Título da Seção",
-                                basedOn: "Normal",
-                                next: "Normal",
-                                run: { bold: true, size: 24 },
-                                paragraph: { spacing: { before: 240, after: 240 } }
-                            }]
-                        },
                         sections: [{
                             properties: {
-                                page: { margin: { top: 1701, right: 1134, bottom: 1134, left: 1701 } },
+                                page: {
+                                    margin: {
+                                        top: 1701,
+                                        right: 1134,
+                                        bottom: 1134,
+                                        left: 1701
+                                    },
+                                },
                             },
-                            children: docChildren,
-                        }],
+                            children: [
+                                new Paragraph({ text: dados.instituicao, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
+                                new Paragraph({ text: "", spacing: { after: 2000 } }),
+                                new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER, spacing: { after: 200 } }),
+                                new Paragraph({ text: "", spacing: { after: 2000 } }),
+                                new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
+                                ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
+                                new Paragraph({ text: "", spacing: { after: 4000 } }),
+                                new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
+                                new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
+                                new Paragraph({ children: [new PageBreak()] }),
+                                new Paragraph({ text: dados.autor, alignment: AlignmentType.CENTER }),
+                                new Paragraph({ text: "", spacing: { after: 2000 } }),
+                                new Paragraph({ children: [new TextRun({ text: dados.titulo, bold: true })], alignment: AlignmentType.CENTER }),
+                                ...(dados.subtitulo ? [new Paragraph({ text: dados.subtitulo, alignment: AlignmentType.CENTER })] : []),
+                                new Paragraph({ text: "", spacing: { after: 2500 } }),
+                                ...(dados.natureza && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({
+                                    children: [new TextRun({ text: dados.natureza })],
+                                    indent: { left: 4535 },
+                                    alignment: AlignmentType.JUSTIFIED,
+                                })] : []),
+                                new Paragraph({ text: "", spacing: { after: 400 } }),
+                                ...(dados.orientador && tipoTrabalhoCompleto !== 'Artigo Científico' ? [new Paragraph({ text: `Orientador(a): ${dados.orientador}`, indent: { left: 4535 } })] : []),
+                                new Paragraph({ text: "", spacing: { after: 2500 } }),
+                                new Paragraph({ text: dados.cidade, alignment: AlignmentType.CENTER }),
+                                new Paragraph({ text: dados.ano, alignment: AlignmentType.CENTER }),
+                                new Paragraph({ children: [new PageBreak()] }),
+                                new Paragraph({ text: "RESUMO", alignment: AlignmentType.LEFT, style: "tituloSecao" }),
+                                new Paragraph({ text: dados.resumo, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
+                                new Paragraph({
+                                    children: [ new TextRun({ text: "Palavras-chave: ", bold: true }), new TextRun(dados.palavras_chave)],
+                                    spacing: { before: 240 }
+                                }),
+                                new Paragraph({ children: [new PageBreak()] }),
+                                new Paragraph({ text: "ABSTRACT", alignment: AlignmentType.LEFT, style: "tituloSecao" }),
+                                new Paragraph({ text: dados.abstract, alignment: AlignmentType.JUSTIFIED, spacing: { line: 360 } }),
+                                new Paragraph({
+                                    children: [ new TextRun({ text: "Keywords: ", bold: true }), new TextRun(dados.keywords)],
+                                    spacing: { before: 240 }
+                                }),
+                                new Paragraph({ children: [new PageBreak()] }),
+                                new Paragraph({ text: "1 INTRODUÇÃO", style: "tituloSecao", alignment: AlignmentType.LEFT }),
+                                ...criarParagrafosDeTexto(dados.introducao),
+                                new Paragraph({ text: "2 DESENVOLVIMENTO", style: "tituloSecao", alignment: AlignmentType.LEFT }),
+                                ...criarParagrafosDeTexto(dados.desenvolvimento),
+                                new Paragraph({ text: "3 CONCLUSÃO", style: "tituloSecao", alignment: AlignmentType.LEFT }),
+                                ...criarParagrafosDeTexto(dados.conclusao),
+                                new Paragraph({ children: [new PageBreak()] }),
+                                new Paragraph({ text: "REFERÊNCIAS", alignment: AlignmentType.LEFT, style: "tituloSecao" }),
+                                ...(dados.referencias ? dados.referencias.split('\n').filter(r => r.trim() !== '').map(ref => new Paragraph({
+                                    text: ref,
+                                    alignment: AlignmentType.JUSTIFIED,
+                                    spacing: { after: 240 }
+                                })) : []),
+                            ],
+                            styles: {
+                                default: {
+                                    document: {
+                                        run: { size: 24, font: "Times New Roman" },
+                                    },
+                                    paragraph: { spacing: { before: 0, after: 0 } }
+                                },
+                                paragraphStyles: [{
+                                    id: "tituloSecao",
+                                    name: "Título da Seção",
+                                    basedOn: "Normal",
+                                    next: "Normal",
+                                    run: { bold: true, size: 24 },
+                                    paragraph: { spacing: { before: 240, after: 240 } }
+                                }]
+                            },
+                        }]
                     });
-
                     Packer.toBlob(doc).then(blob => {
                         const nomeArquivo = `Trabalho_Formatado_${dados.autor.split(' ')[0] || 'Autor'}.docx`;
                         saveAs(blob, nomeArquivo);
@@ -734,7 +439,6 @@ e.AlignmentType=void 0,e.AlignmentType=a.AlignmentType,e.Document=a.Document,e.P
                         loadingModal.style.display = 'none';
                         alert("Ocorreu um erro ao gerar o arquivo. Verifique o console (F12).");
                     });
-
                 } catch (e) {
                     console.error("Erro crítico durante a criação do documento:", e);
                     loadingModal.style.display = 'none';
