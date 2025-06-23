@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador ABNT Completo</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -142,7 +141,7 @@
             <h1>Gerador de Trabalhos Acadêmicos – ABNT</h1>
         </header>
         <main>
-            <section>
+            <section id="tipo-trabalho-section">
                 <h2>Tipo de Trabalho</h2>
                 <div class="botoes-selecao">
                     <button type="button" class="btn-selecao" data-tipo="Projeto de Pesquisa">Projeto de Pesquisa</button>
@@ -153,7 +152,25 @@
                     <button type="button" class="btn-selecao" data-tipo="Tese">Tese</button>
                 </div>
             </section>
-            <form id="form-abnt">
+            <section id="alerta-section" class="hidden">
+                <div class="campo-grupo" style="text-align:center;">
+                    <h3>Atenção - Informações Importantes</h3>
+                    <p class="small">
+                        <strong>O QUE ESTA APLICAÇÃO NÃO FAZ:</strong><br>
+                        • Análise de conteúdo, plágio ou mérito.<br>
+                        • Correção ortográfica ou gramatical.<br>
+                        • Geração automática de sumário ou listas.<br>
+                        <br>
+                        <strong>REVISÃO FINAL É ESSENCIAL:</strong><br>
+                        • Você DEVE revisar o arquivo final após baixar.<br>
+                        <br>
+                        <strong>SEUS DADOS NÃO SÃO SALVOS:</strong><br>
+                        • Se fechar ou recarregar esta página, TODO o conteúdo será PERDIDO.
+                    </p>
+                    <button id="btn-confirmar-alerta" type="button" class="btn-formatar" style="width:auto;margin:0 auto;max-width:300px;">Estou ciente e desejo continuar</button>
+                </div>
+            </section>
+            <form id="form-abnt" class="hidden">
                 <input type="hidden" id="tipo-trabalho" name="tipo-trabalho" value="TCC">
                 <div class="campo-grupo">
                     <h3>Informações da Capa</h3>
@@ -248,29 +265,42 @@
             </form>
         </main>
         <footer>
-            <p>Gerador ABNT Completo v3.0 – Para revisão e adequação manual final pelo usuário.</p>
+            <p>Gerador ABNT Completo v3.1 – Para revisão e adequação manual final pelo usuário.</p>
         </footer>
     </div>
     <script>
     const tiposComFolhaAprovacao = ["TCC", "Monografia", "Dissertação", "Tese"];
 
-    // Tipo de trabalho (mostra/esconde campos)
+    // 1. Inicial: só mostra escolha do tipo
+    document.getElementById('form-abnt').classList.add('hidden');
+    document.getElementById('alerta-section').classList.add('hidden');
+
+    let tipoSelecionado = null;
+
     document.querySelectorAll('.btn-selecao').forEach(btn => {
         btn.addEventListener('click', function() {
+            tipoSelecionado = btn.getAttribute('data-tipo');
             document.querySelectorAll('.btn-selecao').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            document.getElementById('tipo-trabalho').value = btn.getAttribute('data-tipo');
+            document.getElementById('tipo-trabalho').value = tipoSelecionado;
             const grupoFolhaAprovacao = document.getElementById('folha-aprovacao-grupo');
-            if (tiposComFolhaAprovacao.includes(btn.getAttribute('data-tipo'))) {
+            if (tiposComFolhaAprovacao.includes(tipoSelecionado)) {
                 grupoFolhaAprovacao.classList.remove('hidden');
             } else {
                 grupoFolhaAprovacao.classList.add('hidden');
             }
+            // Fluxo: esconde escolha, mostra alerta
+            document.getElementById('tipo-trabalho-section').classList.add('hidden');
+            document.getElementById('alerta-section').classList.remove('hidden');
         });
     });
 
-    // Preseleciona TCC por padrão
-    document.querySelector('.btn-selecao[data-tipo="TCC"]').click();
+    // 2. Confirmação do alerta
+    document.getElementById('btn-confirmar-alerta').addEventListener('click', function() {
+        document.getElementById('alerta-section').classList.add('hidden');
+        document.getElementById('form-abnt').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     // Modal de carregamento
     function showModal() { document.getElementById('loading-modal').style.display = 'flex'; }
@@ -327,6 +357,18 @@
             glossario: getValue('glossario')
         };
 
+        // ORGANIZAÇÃO DAS REFERÊNCIAS EM ORDEM ALFABÉTICA
+        function ordenarReferencias(refs) {
+            return refs.split('\n')
+                .map(r => r.trim())
+                .filter(r => r.length > 0)
+                .sort((a, b) => {
+                    // Padrão ABNT: comparar pelo primeiro sobrenome
+                    let a1 = a.toUpperCase(), b1 = b.toUpperCase();
+                    return a1.localeCompare(b1, 'pt');
+                });
+        }
+
         // Helpers para parágrafos
         function makeTitle(text, style = "TituloPrincipal") {
             return new Paragraph({ text: text, style: style });
@@ -339,6 +381,15 @@
         }
         function makeBlank(lines = 1) {
             return Array(lines).fill(null).map(() => new Paragraph({ text: "" }));
+        }
+        // Natureza do trabalho com recuo de 8cm
+        function makeNatureza(text) {
+            return new Paragraph({
+                text: text,
+                style: "TextoNormal",
+                indent: { left: 4535 }, // 8cm em twips (1cm=567 twips)
+                alignment: AlignmentType.JUSTIFIED
+            });
         }
 
         // Elementos do documento
@@ -361,7 +412,7 @@
         docElementos.push(makeTitle(dados.titulo, "TituloPrincipal"));
         if(dados.subtitulo) docElementos.push(makeTitle(dados.subtitulo, "Subtitulo"));
         docElementos.push(...makeBlank(5));
-        docElementos.push(makeNormal(dados.natureza));
+        if(dados.natureza) docElementos.push(makeNatureza(dados.natureza));
         if(dados.curso) docElementos.push(makeNormal(`Curso: ${dados.curso}`));
         if(dados.orientador) docElementos.push(makeNormal(`Orientador(a): ${dados.orientador}`));
         docElementos.push(...makeBlank(6));
@@ -409,18 +460,32 @@
         docElementos.push(makeNormal(dados.sumario || "(Preencher manualmente no Word. Exclua esta página se desejar.)"));
         docElementos.push(new Paragraph({ children: [new PageBreak()] }));
 
-        // -------- RESUMO E ABSTRACT --------
+        // -------- RESUMO + PALAVRAS-CHAVE --------
         docElementos.push(makeSection("RESUMO"));
         docElementos.push(makeNormal(dados.resumo));
+        if(dados.palavras_chave) {
+            docElementos.push(new Paragraph({
+                children: [
+                    new TextRun({ text: "Palavras-chave: ", bold: true }),
+                    new TextRun(dados.palavras_chave)
+                ],
+                style: "TextoNormal"
+            }));
+        }
         docElementos.push(new Paragraph({ children: [new PageBreak()] }));
 
+        // -------- ABSTRACT + KEYWORDS --------
         docElementos.push(makeSection("ABSTRACT"));
         docElementos.push(makeNormal(dados.abstract));
-        docElementos.push(new Paragraph({ children: [new PageBreak()] }));
-
-        // -------- PALAVRAS-CHAVE E KEYWORDS --------
-        docElementos.push(makeNormal("Palavras-chave: " + dados.palavras_chave));
-        docElementos.push(makeNormal("Keywords: " + dados.keywords));
+        if(dados.keywords) {
+            docElementos.push(new Paragraph({
+                children: [
+                    new TextRun({ text: "Keywords: ", bold: true }),
+                    new TextRun(dados.keywords)
+                ],
+                style: "TextoNormal"
+            }));
+        }
         docElementos.push(new Paragraph({ children: [new PageBreak()] }));
 
         // -------- TEXTO PRINCIPAL --------
@@ -446,7 +511,7 @@
 
         // -------- REFERÊNCIAS --------
         docElementos.push(makeSection("REFERÊNCIAS"));
-        (dados.referencias || '').split('\n').filter(x=>x.trim()!=="").forEach(ref => {
+        ordenarReferencias(dados.referencias).forEach(ref => {
             docElementos.push(new Paragraph({ text: ref, style: "Referencia" }));
         });
 
